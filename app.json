@@ -1,0 +1,89 @@
+{
+  "name": "HabiTrak",
+  "displayName": "HabiTrak",
+  "expo": {
+    "name": "HabiTrak",
+    "slug": "habittracker",
+    "scheme": "habitrak",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/CheckMarkBlue.png",
+    "splash": {
+      "image": "./assets/images/Splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#191015"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "jsEngine": "hermes",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "icon": "./assets/images/app-icon-android-legacy.png",
+      "package": "com.habittracker",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
+        "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
+      },
+      "splash": {
+        "image": "./assets/images/Splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      }
+    },
+    "ios": {
+      "icon": "./assets/images/CheckMarkBlue.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.habitrak.app.ios",
+      "buildNumber": "2",
+      "splash": {
+        "image": "./assets/images/Splash.png",
+        "tabletImage": "./assets/images/Splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "web": {
+      "favicon": "./assets/images/CheckMarkBlue.png",
+      "splash": {
+        "image": "./assets/images/Splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      },
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": true,
+            "flipper": false
+          },
+          "android": {
+            "newArchEnabled": true
+          }
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "tsconfigPaths": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "93288258-d030-4cee-a649-5f2f019d6a98"
+      }
+    },
+    "owner": "roryschof"
+  },
+  "ignite": {
+    "version": "9.6.2"
+  }
+}
