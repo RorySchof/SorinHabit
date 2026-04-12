@@ -1,4 +1,5 @@
 // app/services/habit-sync.ts
+
 import { supabase } from "app/services/api/supabase"
 import { authStore } from "app/models/auth-store"
 import { habitStore } from "app/models/habit-store"
@@ -12,6 +13,9 @@ import uuid from "react-native-uuid"   // ⬅️ swap out the old import
 export async function syncHabitToSupabase(habit: any) {
   const userId = authStore.user?.id
   if (!userId) return
+
+    // ⭐ Debug log — what are we actually sending?
+    console.log("SYNCING HABIT TO SUPABASE:", habit)
 
   try {
     const { data, error } = await supabase

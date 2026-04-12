@@ -1,4 +1,5 @@
 // // app/models/auth-store.ts
+
 // import { makeAutoObservable } from "mobx"
 // import { supabase } from "app/services/api/supabase"
 // import { hydrateFromSupabase, migrateGuestDataToSupabase } from "app/services/api/habit-sync"

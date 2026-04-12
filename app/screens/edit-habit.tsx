@@ -380,7 +380,7 @@ const $container: ViewStyle = {
   paddingHorizontal: spacing.md,
   gap: spacing.xl,
   paddingBottom: 70,
-  flex: 1,
+  // flex: 1,
 }
 
 const $headerContainer: ViewStyle = {

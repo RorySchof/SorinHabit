@@ -152,15 +152,28 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
 
   //  FILTER HABITS FOR SELECTED DAY
 
+  // const filteredHabits = habits.filter((habit) => {
+  //   if (!habit.createdAt || !habit.frequency) return false
+  //   if (habit.deleted) return false
+
+  //   // const habitLocalDateStr = habit.createdAt
+  //   const habitLocalDateStr = habit.createdAt.split("T")[0]
+  //   const includesDay = habit.frequency.includes(selectedDay)
+  //   const isBeforeOrOnSelectedDate = habitLocalDateStr <= selectedLocalDateStr
+  //   const shouldInclude = isBeforeOrOnSelectedDate && includesDay
+  //   return shouldInclude
+  // })
+
+
   const filteredHabits = habits.filter((habit) => {
     if (!habit.createdAt || !habit.frequency) return false
     if (habit.deleted) return false
-
-    const habitLocalDateStr = habit.createdAt
+  
+    const habitLocalDateStr = (habit.createdAt || "").split("T")[0]
     const includesDay = habit.frequency.includes(selectedDay)
     const isBeforeOrOnSelectedDate = habitLocalDateStr <= selectedLocalDateStr
-    const shouldInclude = isBeforeOrOnSelectedDate && includesDay
-    return shouldInclude
+  
+    return isBeforeOrOnSelectedDate && includesDay
   })
 
   //  MARKED DATES FOR CALENDAR

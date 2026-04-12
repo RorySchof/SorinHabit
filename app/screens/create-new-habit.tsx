@@ -12,6 +12,9 @@ import { habitStore } from "app/models/habit-store"
 import { useFocusEffect } from "@react-navigation/native"
 import CheckMarkBlue from "assets/images/CheckMarkBlue.png"
 
+
+import { syncHabitToSupabase } from "app/services/api/habit-sync"
+
 // CONSTANTS --------------------------------------------------
 
 const DEFAULT_HABIT_ICON = "✔️"
@@ -119,12 +122,11 @@ export const CreateNewHabitScreen: FC<CreateNewHabitScreenProps> = observer(
         alert("Please choose a habit start date")
         return
       }
-
-      habitStore.addHabit({
+      const newHabit = habitStore.addHabit({
         name,
         emoji: selectedEmoji,
-        date: habitDate.toLocaleDateString("en-CA"), // YYYY-MM-DD local
-        time: habitTime.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }), // HH:MM local
+        date: habitDate.toLocaleDateString("en-CA"),
+        time: habitTime.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
         category,
         target: target || 1,
         unit,
@@ -132,6 +134,13 @@ export const CreateNewHabitScreen: FC<CreateNewHabitScreenProps> = observer(
         frequency,
         reminder: reminder || undefined,
       })
+
+//       // ⭐ Debug: what did we actually create?
+// console.log("NEW HABIT CREATED LOCALLY:", newHabit)
+
+//       // ⭐ Sync to Supabase
+//   syncHabitToSupabase(newHabit)
+
       navigation.goBack()
     }
 

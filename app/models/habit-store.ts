@@ -324,7 +324,8 @@ export const HabitStoreModel = types
   .actions((self) => ({
     addHabit(habitData: HabitData) {
       const newHabit = HabitModel.create({
-        id: String(Date.now()),
+        // id: String(Date.now()),
+        id: uuidv4(),
         name: habitData.name,
         emoji: habitData.emoji,
         time: habitData.time,
@@ -343,15 +344,19 @@ export const HabitStoreModel = types
       self.habits.push(newHabit)
       scheduleHabitReminder(newHabit)
       syncHabitToSupabase(newHabit)
+
+      return newHabit
     },
 
     hydrateFromSupabase(habits: any[], logs: any[]) {
+      self.activityLog.clear()
       const normalizedHabits = habits.map((h) => ({
         id: h.id,
         name: h.name,
         emoji: h.emoji,
         time: h.time,
         date: h.date,
+        createdAt: h.created_at ?? h.date,   // ⭐ FIX
         finished: h.finished ?? false,
         category: h.category,
         current: h.current ?? 0,
@@ -368,6 +373,7 @@ export const HabitStoreModel = types
               }
             })(),
       }))
+      
 
       self.habits.replace(normalizedHabits.map((h) => HabitModel.create(h)))
 
@@ -375,6 +381,11 @@ export const HabitStoreModel = types
         ...l,
         habitId: l.habit_id ?? l.habitId,
       }))
+
+       // ⭐ FIX: replace logs so old MST nodes don’t linger
+  self.activityLog.replace(
+    normalizedLogs.map((l) => ActivityLogModel.create(l))
+  )
     },
 
     reconcileHabitId(localId: string, supabaseId: string) {
