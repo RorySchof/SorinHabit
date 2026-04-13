@@ -28,7 +28,7 @@
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
       },
       "splash": {
-        "image": "./assets/images/Splash.png",
+        "image": "./assets/images/WhiteSplash.png",
         "resizeMode": "contain",
         "backgroundColor": "#191015"
       }

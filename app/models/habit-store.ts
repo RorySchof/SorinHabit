@@ -24,41 +24,6 @@ const reminderOffsets: Record<string, number> = {
 
 // REMINDER SCHEDULING -----------------------------------------
 
-// export const scheduleHabitReminder = flow(function* scheduleHabitReminder(habit) {
-//   if (!habit.reminder || habit.deleted || habit.paused) return
-
-//   const offset = reminderOffsets[habit.reminder] ?? 0
-//   if (!habit.time || habit.time === "anytime") return
-
-//   const [hours, minutes] = habit.time.split(":").map(Number)
-
-//   const now = new Date()
-//   const trigger = new Date()
-//   trigger.setHours(hours, minutes, 0, 0)
-
-//   if (trigger <= now) {
-//     trigger.setDate(trigger.getDate() + 1)
-//   }
-
-//   trigger.setMinutes(trigger.getMinutes() - offset)
-
-//   const id = yield Notifications.scheduleNotificationAsync({
-//     content: {
-//       title: "Habit Reminder",
-//       body: `Time for ${habit.name}`,
-//       sound: true,
-//     },
-//     trigger: {
-//       type: "calendar",
-//       hour: trigger.getHours(),
-//       minute: trigger.getMinutes(),
-//       repeats: true,
-//     } as Notifications.CalendarTriggerInput,
-//   })
-
-//   habit.reminderId = id
-// })
-
 export const scheduleHabitReminder = flow(function* scheduleHabitReminder(habit) {
   console.log("🔔 scheduleHabitReminder called for:", habit.name)
 
@@ -112,15 +77,6 @@ if (isNaN(hours) || isNaN(minutes)) {
   console.log("✅ Scheduled reminder:", habit.name, "ID:", id)
   habit.reminderId = id
 })
-
-
-
-// export const cancelHabitReminder = flow(function* cancelHabitReminder(habit) {
-//   if (habit.reminderId) {
-//     yield Notifications.cancelScheduledNotificationAsync(habit.reminderId)
-//     habit.reminderId = undefined
-//   }
-// })
 
 export const cancelHabitReminder = flow(function* cancelHabitReminder(habit) {
   if (habit.reminderId) {
@@ -325,7 +281,8 @@ export const HabitStoreModel = types
     addHabit(habitData: HabitData) {
       const newHabit = HabitModel.create({
         // id: String(Date.now()),
-        id: uuidv4(),
+        // id: uuidv4(),
+        id: String(Date.now()),
         name: habitData.name,
         emoji: habitData.emoji,
         time: habitData.time,
@@ -551,23 +508,6 @@ export const HabitStoreModel = types
     },
 
     // UPDATE HABIT ------------------------------------------------------------
-
-    // updateHabit(id: string, updates: Partial<HabitData & { paused?: boolean }>) {
-    //   const habit = self.habits.find((h) => h.id === id)
-    //   if (habit) {
-    //     cancelHabitReminder(habit)
-    
-    //     Object.entries(updates).forEach(([key, value]) => {
-    //       // @ts-ignore
-    //       habit[key] = value
-    //     })
-    
-    //     self.recalculateTodayProgressForHabit(habit)
-    
-    //     // ⭐ reschedule with new data
-    //     scheduleHabitReminder(habit)
-    //   }
-    // }
 
     updateHabit(id, updates) {
       const habit = self.habits.find((h) => h.id === id)

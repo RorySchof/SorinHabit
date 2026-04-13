@@ -40,6 +40,10 @@ import { RootStoreProvider } from "./models"
 import * as Notifications from "expo-notifications"
 import { authStore } from "app/models/auth-store"
 
+import { supabase } from "app/services/api/supabase"
+import { navigationRef } from "./navigators/navigation-utilities"
+
+
 
 // Web linking configuration
 const prefix = Linking.createURL("/")
@@ -102,12 +106,27 @@ export default function App(props: AppProps) {
     authStore.loadSession()
   }, [])
 
+  // 🔥 MUST be above the early return
+useEffect(() => {
+  const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY") {
+      navigationRef.current?.navigate("PasswordReset")
+    }
+  })
+
+  return () => subscription.subscription.unsubscribe()
+}, [])
+
+// ❗ Only after all hooks
+
   if (!rehydrated || !isNavigationStateRestored || !areFontsLoaded) return null
 
   const linking = {
     prefixes: [prefix],
     config,
   }
+
+  
 
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>

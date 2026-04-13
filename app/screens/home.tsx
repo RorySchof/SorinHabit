@@ -55,7 +55,7 @@ interface HabitType {
 //   progress: number
 // }
 
-interface HomeScreenProps extends HomeStackScreenProps<"Home"> {}
+interface HomeScreenProps extends HomeStackScreenProps<"Home"> { }
 
 interface HabitProps {
   task: HabitType
@@ -67,7 +67,7 @@ const DEFAULT_HABIT_ICON = "✔️"
 //COMPONENT
 
 export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ navigation }) {
-  
+
   // STATE & REFS
 
   const today = new Date()
@@ -152,27 +152,14 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
 
   //  FILTER HABITS FOR SELECTED DAY
 
-  // const filteredHabits = habits.filter((habit) => {
-  //   if (!habit.createdAt || !habit.frequency) return false
-  //   if (habit.deleted) return false
-
-  //   // const habitLocalDateStr = habit.createdAt
-  //   const habitLocalDateStr = habit.createdAt.split("T")[0]
-  //   const includesDay = habit.frequency.includes(selectedDay)
-  //   const isBeforeOrOnSelectedDate = habitLocalDateStr <= selectedLocalDateStr
-  //   const shouldInclude = isBeforeOrOnSelectedDate && includesDay
-  //   return shouldInclude
-  // })
-
-
   const filteredHabits = habits.filter((habit) => {
     if (!habit.createdAt || !habit.frequency) return false
     if (habit.deleted) return false
-  
+
     const habitLocalDateStr = (habit.createdAt || "").split("T")[0]
     const includesDay = habit.frequency.includes(selectedDay)
     const isBeforeOrOnSelectedDate = habitLocalDateStr <= selectedLocalDateStr
-  
+
     return isBeforeOrOnSelectedDate && includesDay
   })
 
@@ -213,12 +200,12 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
       }
     })
 
-  // Initialize animations for check-ins
-  ;(checkIns ?? []).forEach((checkIn) => {
-    if (!scaleAnims[checkIn.id]) {
-      scaleAnims[checkIn.id] = new Animated.Value(1)
-    }
-  })
+    // Initialize animations for check-ins
+    ; (checkIns ?? []).forEach((checkIn) => {
+      if (!scaleAnims[checkIn.id]) {
+        scaleAnims[checkIn.id] = new Animated.Value(1)
+      }
+    })
 
   // RENDER SECTION
 
@@ -720,10 +707,10 @@ const $bottomContainer: ViewStyle = {
 }
 // Check-In Card Styles ------------------------------------
 
-const $headingContainer: ViewStyle = { 
-  flexDirection: "row", 
-  alignItems: "center", 
-  gap: 15 
+const $headingContainer: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 15
 }
 
 const $emojiContainer: ViewStyle = {
@@ -740,13 +727,13 @@ const $emojiText: TextStyle = {
   textAlign: "center",
 }
 
-const $circularProgressContainer: ViewStyle = { 
-  alignSelf: "center" 
+const $circularProgressContainer: ViewStyle = {
+  alignSelf: "center"
 }
 
-const $circularProgressChildren: ViewStyle = { 
+const $circularProgressChildren: ViewStyle = {
   alignItems: "center"
- }
+}
 
 const $footerContainer: ViewStyle = {
   backgroundColor: colors.background,

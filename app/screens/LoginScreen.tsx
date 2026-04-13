@@ -1,4 +1,242 @@
-// app/screens/LoginScreen.tsx
+// //Login Screen
+
+// import React, { useState } from "react"
+// import { observer } from "mobx-react-lite"
+// import {
+//   View,
+//   TextInput,
+//   TouchableOpacity,
+//   ActivityIndicator,
+//   Keyboard,
+//   TouchableWithoutFeedback,
+//   Image,
+// } from "react-native"
+// import { Text } from "app/components"
+// import { colors, spacing } from "app/theme"
+// import { authStore } from "app/models/auth-store"
+// import { migrateGuestDataToSupabase } from "app/services/api/habit-sync"
+// import CheckMarkBlue from "assets/images/CheckMarkBlue.png"
+
+// export const LoginScreen = observer(() => {
+//   const [email, setEmail] = useState("")
+//   const [password, setPassword] = useState("")
+
+//   const canSubmit = email.trim().length > 0 && password.trim().length >= 6
+
+//   // Logged-in state
+//   if (authStore.user) {
+//     return (
+//       <View
+//         style={{
+//           flex: 1,
+//           justifyContent: "center",
+//           padding: spacing.lg,
+//           backgroundColor: colors.background,
+//         }}
+//       >
+//         <View
+//           style={{
+//             backgroundColor: colors.palette.neutral100,
+//             borderRadius: 10,
+//             padding: spacing.lg,
+//             borderWidth: 1,
+//             borderColor: colors.palette.neutral300,
+//             shadowColor: "#000",
+//             shadowOpacity: 0.08,
+//             shadowRadius: 3,
+//             elevation: 3,
+//             alignItems: "center",
+//           }}
+//         >
+//           {/* Avatar */}
+//           <View
+//             style={{
+//               width: 48,
+//               height: 48,
+//               borderRadius: 99,
+//               backgroundColor: colors.background,
+//               alignItems: "center",
+//               justifyContent: "center",
+//               marginBottom: spacing.sm,
+//             }}
+//           >
+//             <Image
+//               source={CheckMarkBlue}
+//               style={{ width: 48, height: 48, resizeMode: "contain" }}
+//             />
+//           </View>
+
+//           {/* Email */}
+//           <Text
+//             text={authStore.user.email}
+//             preset="subheading"
+//             numberOfLines={1}
+//             style={{ marginBottom: spacing.xs }}
+//           />
+
+//           {/* Soft supportive line */}
+//           <Text
+//             text="You're all set"
+//             size="sm"
+//             style={{
+//               color: colors.palette.neutral600,
+//               marginBottom: spacing.md,
+//             }}
+//           />
+
+//           {/* Logout */}
+//           <TouchableOpacity
+//             onPress={() => authStore.signOut()}
+//             style={{
+//               backgroundColor: "#304FFE",
+//               paddingVertical: spacing.md,
+//               borderRadius: 10,
+//               width: "100%",
+//               alignItems: "center",
+//             }}
+//           >
+//             <Text text="Logout" style={{ color: "#fff", fontWeight: "600" }} />
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     )
+//   }
+
+//   // Logged-out state
+//   return (
+//     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+//       <View
+//         style={{
+//           flex: 1,
+//           justifyContent: "center",
+//           padding: spacing.lg,
+//           backgroundColor: colors.background,
+//         }}
+//       >
+//         <View
+//           style={{
+//             backgroundColor: colors.palette.neutral100,
+//             borderRadius: 10,
+//             padding: spacing.lg,
+//             borderWidth: 1,
+//             borderColor: colors.palette.neutral300,
+//             shadowColor: "#000",
+//             shadowOpacity: 0.08,
+//             shadowRadius: 3,
+//             elevation: 3,
+//           }}
+//         >
+//           {/* TITLE + SUBTITLE */}
+//           <Text
+//             text="Sign in"
+//             preset="heading"
+//             style={{ marginBottom: spacing.xs }}
+//           />
+
+//           <Text
+//             text="Pick up where you left off"
+//             size="sm"
+//             style={{
+//               marginBottom: spacing.lg,
+//               color: colors.palette.neutral600,
+//             }}
+//           />
+
+//           {/* EMAIL */}
+//           <TextInput
+//             placeholder="Email"
+//             value={email}
+//             onChangeText={setEmail}
+//             autoCapitalize="none"
+//             keyboardType="email-address"
+//             style={{
+//               borderWidth: 1,
+//               borderColor: colors.palette.neutral300,
+//               borderRadius: 10,
+//               padding: spacing.md,
+//               marginBottom: spacing.md,
+//               backgroundColor: colors.background,
+//             }}
+//           />
+
+//           {/* PASSWORD */}
+//           <TextInput
+//             placeholder="Password"
+//             value={password}
+//             onChangeText={setPassword}
+//             secureTextEntry
+//             returnKeyType="done"
+//             onSubmitEditing={Keyboard.dismiss}
+//             style={{
+//               borderWidth: 1,
+//               borderColor: colors.palette.neutral300,
+//               borderRadius: 10,
+//               padding: spacing.md,
+//               marginBottom: spacing.lg,
+//               backgroundColor: colors.background,
+//             }}
+//           />
+
+//           {authStore.error && (
+//             <Text
+//               text={authStore.error}
+//               style={{ color: "#D32F2F", marginBottom: spacing.md }}
+//             />
+//           )}
+
+//           {/* LOGIN BUTTON */}
+//           <TouchableOpacity
+//             disabled={!canSubmit}
+//             onPress={async () => {
+//               await authStore.signIn(email.trim(), password.trim())
+//               if (authStore.user) {
+//                 await migrateGuestDataToSupabase()
+//               }
+//             }}
+//             style={{
+//               backgroundColor: canSubmit ? "#304FFE" : "#C7C9D1",
+//               paddingVertical: spacing.md,
+//               borderRadius: 10,
+//               alignItems: "center",
+//               marginBottom: spacing.sm,
+//             }}
+//           >
+//             {authStore.loading ? (
+//               <ActivityIndicator color="#fff" />
+//             ) : (
+//               <Text text="Sign in" style={{ color: "#fff", fontWeight: "600" }} />
+//             )}
+//           </TouchableOpacity>
+
+//           {/* CREATE ACCOUNT */}
+//           <TouchableOpacity
+//             disabled={!canSubmit}
+//             onPress={async () => {
+//               await authStore.signUp(email.trim(), password.trim())
+//               if (authStore.user) {
+//                 await migrateGuestDataToSupabase()
+//               }
+//             }}
+//             style={{ alignItems: "center", marginTop: spacing.sm }}
+//           >
+//             <Text
+//               text="Create an account"
+//               style={{
+//                 color: canSubmit ? "#304FFE" : "#C7C9D1",
+//                 fontWeight: "500",
+//               }}
+//             />
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </TouchableWithoutFeedback>
+//   )
+// })
+
+
+
+
+
 import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
@@ -8,133 +246,138 @@ import {
   ActivityIndicator,
   Keyboard,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native"
 import { Text } from "app/components"
 import { colors, spacing } from "app/theme"
 import { authStore } from "app/models/auth-store"
-
 import { migrateGuestDataToSupabase } from "app/services/api/habit-sync"
-
-// import AsyncStorage from "@react-native-async-storage/async-storage"
-// import { createClient } from "@supabase/supabase-js"
-
-// const supabaseUrl = "https://inykbrspygwzopyngtlu.supabase.co"
-// const supabaseAnonKey = "your-anon-keeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlueWticnNweWd3em9weW5ndGx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ5MTAyNjgsImV4cCI6MjA4MDQ4NjI2OH0.CZTRaUZmjA09UVtw254n0TxaXGLbC-sUaJIsFZBQu_8"
-
-// export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-//   auth: {
-//     storage: AsyncStorage,
-//     autoRefreshToken: true,
-//     persistSession: true,
-//     detectSessionInUrl: false,
-//   },
-// })
+import CheckMarkBlue from "assets/images/CheckMarkBlue.png"
+import { useNavigation } from "@react-navigation/native"
 
 export const LoginScreen = observer(() => {
+  const navigation = useNavigation()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  // Simple validation
   const canSubmit = email.trim().length > 0 && password.trim().length >= 6
-if (authStore.user) {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        padding: spacing.lg,
-        backgroundColor: colors.palette.neutral100,
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: "#fff",
-          borderRadius: spacing.xs,
-          padding: spacing.lg,
-          borderWidth: 1,
-          borderColor: colors.palette.neutral300,
-          shadowColor: "#000",
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          elevation: 4,
-          alignItems: "center",
-        }}
-      >
-        {/* Avatar placeholder */}
-        <View
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: 32,
-            backgroundColor: colors.palette.primary100,
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: spacing.md,
-          }}
-        >
-          <Text
-            text={authStore.user.email[0].toUpperCase()}
-            preset="heading"
-            style={{ color: colors.palette.primary600 }}
-          />
-        </View>
 
-        {/* Email */}
-        <Text
-          text={authStore.user.email}
-          preset="subheading"
-          style={{ marginBottom: spacing.sm, color: colors.text }}
-        />
-
-        {/* Premium/Sync stub */}
-        <Text
-          text="Premium features coming soon"
-          size="sm"
-          style={{ marginBottom: spacing.md, color: colors.palette.neutral600 }}
-        />
-
-        {/* Logout button */}
-        <TouchableOpacity
-          onPress={() => authStore.signOut()}
-          style={{
-            backgroundColor: colors.palette.primary600,
-            paddingVertical: spacing.sm,
-            paddingHorizontal: spacing.lg,
-            borderRadius: spacing.xs,
-          }}
-        >
-          <Text text="Logout" style={{ color: "#fff", fontWeight: "bold" }} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  )
-}
-
-
-  // 👇 Guest mode → show login form
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+  // LOGGED-IN STATE ---------------------------------------------------------
+  if (authStore.user) {
+    return (
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           padding: spacing.lg,
-          backgroundColor: colors.palette.neutral100,
+          backgroundColor: colors.background,
         }}
       >
         <View
           style={{
-            backgroundColor: "#fff",
-            borderRadius: spacing.xs,
+            backgroundColor: colors.palette.neutral100,
+            borderRadius: 10,
             padding: spacing.lg,
+            borderWidth: 1,
+            borderColor: colors.palette.neutral300,
+            elevation: 2,
             shadowColor: "#000",
+            shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.1,
-            shadowRadius: 8,
-            elevation: 4,
+            shadowRadius: 2,
+            alignItems: "center",
           }}
         >
-          <Text text="Welcome Back" preset="heading" style={{ marginBottom: spacing.md }} />
+          {/* Avatar */}
+          <View
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 99,
+              backgroundColor: colors.background,
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: spacing.sm,
+            }}
+          >
+            <Image
+              source={CheckMarkBlue}
+              style={{ width: 48, height: 48, resizeMode: "contain" }}
+            />
+          </View>
 
+          <Text
+            text={authStore.user.email}
+            preset="subheading"
+            numberOfLines={1}
+            style={{ marginBottom: spacing.xs }}
+          />
+
+          <Text
+            text="You're all set"
+            size="sm"
+            style={{
+              color: colors.palette.neutral600,
+              marginBottom: spacing.md,
+            }}
+          />
+
+          <TouchableOpacity
+            onPress={() => authStore.signOut()}
+            style={{
+              backgroundColor: colors.palette.primary600,
+              paddingVertical: spacing.md,
+              borderRadius: 10,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <Text text="Logout" style={{ color: "#fff", fontWeight: "600" }} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
+  // LOGGED-OUT STATE --------------------------------------------------------
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center", // stays centered
+          padding: spacing.lg,
+          paddingTop: spacing.xl * 1.5, // pushes card LOWER
+          backgroundColor: colors.background,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: colors.palette.neutral100,
+            borderRadius: 10,
+            padding: spacing.lg,
+            borderWidth: 1,
+            borderColor: colors.palette.neutral300,
+            elevation: 2,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 2,
+          }}
+        >
+          {/* TITLE + SUBTITLE */}
+          <Text text="Sign in" preset="heading" style={{ marginBottom: spacing.xs }} />
+
+          <Text
+            text="Stay on track, one day at a time."
+            size="sm"
+            style={{
+              marginBottom: spacing.lg,
+              color: colors.palette.neutral600,
+            }}
+          />
+
+          {/* EMAIL */}
           <TextInput
             placeholder="Email"
             value={email}
@@ -144,12 +387,15 @@ if (authStore.user) {
             style={{
               borderWidth: 1,
               borderColor: colors.palette.neutral300,
-              borderRadius: spacing.xs,
-              padding: spacing.sm,
-              marginBottom: spacing.sm,
+              borderRadius: 10,
+              padding: spacing.md,
+              marginBottom: spacing.md,
+              backgroundColor: colors.background,
+              color: colors.text,
             }}
           />
 
+          {/* PASSWORD */}
           <TextInput
             placeholder="Password"
             value={password}
@@ -160,115 +406,89 @@ if (authStore.user) {
             style={{
               borderWidth: 1,
               borderColor: colors.palette.neutral300,
-              borderRadius: spacing.xs,
-              padding: spacing.sm,
-              marginBottom: spacing.md,
+              borderRadius: 10,
+              padding: spacing.md,
+              // marginBottom: spacing.lg,
+              backgroundColor: colors.background,
+              color: colors.text,
             }}
           />
 
+
+          {/* FORGOT PASSWORD */}
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ForgotPassword")}
+            style={{ alignSelf: "flex-start", marginTop: spacing.xxs, marginBottom: spacing.lg }}          >
+            <Text
+              text="Forgot password?"
+              size="xs"
+              style={{
+                color: colors.palette.primary600,
+                fontWeight: "400",
+              }}
+            />
+          </TouchableOpacity>
+
+
+          {/* ERROR */}
           {authStore.error && (
-            <Text text={authStore.error} style={{ color: "red", marginBottom: spacing.sm }} />
+            <Text
+              text={authStore.error}
+              style={{
+                color: colors.palette.angry500,
+                marginBottom: spacing.md,
+              }}
+            />
           )}
 
-          {/* login  */}
-
-     <TouchableOpacity
-  disabled={!canSubmit}
-  onPress={async () => {
-    await authStore.signIn(email.trim(), password.trim())
-    if (authStore.user) {
-      // ✅ migrate guest data right after login
-      await migrateGuestDataToSupabase()
-    }
-  }}
-  style={{
-    backgroundColor: canSubmit
-      ? colors.palette.primary600
-      : colors.palette.neutral300,
-    paddingVertical: spacing.sm,
-    borderRadius: spacing.xs,
-    alignItems: "center",
-  }}
->
-  {authStore.loading ? (
-    <ActivityIndicator color="#fff" />
-  ) : (
-    <Text text="Login" style={{ color: "#fff", fontWeight: "bold" }} />
-  )}
-</TouchableOpacity>
-
-
-
-          {/* <TouchableOpacity
+          {/* LOGIN BUTTON */}
+          <TouchableOpacity
             disabled={!canSubmit}
-            onPress={() => authStore.signIn(email.trim(), password.trim())}
+            onPress={async () => {
+              await authStore.signIn(email.trim(), password.trim())
+              if (authStore.user) {
+                await migrateGuestDataToSupabase()
+              }
+            }}
             style={{
               backgroundColor: canSubmit
                 ? colors.palette.primary600
-                : colors.palette.neutral300,
-              paddingVertical: spacing.sm,
-              borderRadius: spacing.xs,
+                : colors.palette.neutral400,
+              paddingVertical: spacing.md,
+              borderRadius: 10,
               alignItems: "center",
+              marginBottom: spacing.sm,
             }}
           >
             {authStore.loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text text="Login" style={{ color: "#fff", fontWeight: "bold" }} />
+              <Text text="Sign in" style={{ color: "#fff", fontWeight: "600" }} />
             )}
-          </TouchableOpacity> */}
+          </TouchableOpacity>
 
-
-          {/* sign up  */}
-
-      <TouchableOpacity
-  disabled={!canSubmit}
-  onPress={async () => {
-    await authStore.signUp(email.trim(), password.trim())
-    if (authStore.user) {
-      // ✅ migrate guest data right after sign up
-      await migrateGuestDataToSupabase()
-    }
-  }}
-  style={{
-    marginTop: spacing.sm,
-    alignItems: "center",
-  }}
->
-  <Text
-    text="Create Account"
-    style={{
-      color: canSubmit ? colors.palette.primary600 : colors.palette.neutral300,
-    }}
-  />
-</TouchableOpacity>
-
-
-
-
-          {/* <TouchableOpacity
+          {/* CREATE ACCOUNT */}
+          <TouchableOpacity
             disabled={!canSubmit}
-            onPress={() => authStore.signUp(email.trim(), password.trim())}
-            style={{
-              marginTop: spacing.sm,
-              alignItems: "center",
+            onPress={async () => {
+              await authStore.signUp(email.trim(), password.trim())
+              if (authStore.user) {
+                await migrateGuestDataToSupabase()
+              }
             }}
+            style={{ alignItems: "center", marginTop: spacing.sm }}
           >
             <Text
-              text="Create Account"
+              text="Create an account"
               style={{
-                color: canSubmit ? colors.palette.primary600 : colors.palette.neutral300,
+                color: canSubmit ? colors.palette.primary600 : colors.palette.neutral400,
+                fontWeight: "500",
               }}
             />
-          </TouchableOpacity> */}
-
-
-
-
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>
   )
 })
-
-

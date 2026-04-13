@@ -45,3 +45,10 @@ export type SettingsScreenProps<T extends keyof SettingsStackParamList> = Compos
   StackScreenProps<SettingsStackParamList, T>
 >
 export type HomeNavProps = HomeStackScreenProps<"Home">["navigation"]
+
+export type AuthStackParamList = {
+  Login: undefined
+  ForgotPassword: undefined  
+  PasswordReset: undefined
+}
+
