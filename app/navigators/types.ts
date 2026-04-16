@@ -50,5 +50,10 @@ export type AuthStackParamList = {
   Login: undefined
   ForgotPassword: undefined  
   PasswordReset: undefined
+  Signup: undefined 
 }
 
+export type RootParamList = {
+  AuthStack: NavigatorScreenParams<AuthStackParamList>
+  MainTabs: NavigatorScreenParams<TabParamList>
+}

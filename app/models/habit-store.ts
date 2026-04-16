@@ -12,6 +12,7 @@ import { authStore } from "app/models/auth-store"
 import { syncHabitToSupabase, syncActivityToSupabase } from "app/services/api/habit-sync"
 import * as Haptics from "expo-haptics"
 
+
 // REMINDER OFFSETS --------------------------------------------
 
 const reminderOffsets: Record<string, number> = {
@@ -182,6 +183,13 @@ export const HabitStoreModel = types
 
   // STORE-LEVEL ACTIONS ---------------------------------------
   .actions((self) => ({
+    // ⭐ RESET STORE (used on logout)
+  reset() {
+    applySnapshot(self, {
+      habits: [],
+      activityLog: [],
+    })
+  },
     // ✅ New store-level action to reconcile log IDs
     reconcileLogHabitId(oldId: string, newId: string) {
       self.activityLog.forEach((log) => {

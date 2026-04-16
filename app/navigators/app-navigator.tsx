@@ -23,6 +23,7 @@ import { EditPasswordScreen } from "app/screens/profile/edit-password"
 import { ExperimentalStatsScreen } from "app/screens/ExperimentalStatsScreen"
 import { LoginScreen } from "app/screens/LoginScreen"
 import { AuthStackParamList } from "app/navigators/types"
+import { AuthStackNavigator } from "./AuthStackNavigator"
 
 const exitRoutes = Config.exitRoutes
 
@@ -68,23 +69,12 @@ const SettingsStack = observer(function SettingsStack() {
   )
 })
 
-const AuthStack = createNativeStackNavigator<AuthStackParamList>()
-
-function AuthStackNavigator() {
-  return (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="PasswordReset" component={Screens.PasswordResetScreen} />
-      <AuthStack.Screen name="ForgotPassword" component={Screens.ForgotPasswordScreen} />
-    </AuthStack.Navigator>
-  )
-}
-
-
 const Tab = createBottomTabNavigator<TabParamList>()
 
 export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
+
+  const RootStack = createNativeStackNavigator<RootParamList>()
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const colorScheme = useColorScheme()
@@ -174,8 +164,7 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
     tabBarLabel: "",
   }}
 />
-
-        
+  
       </Tab.Navigator>
     </NavigationContainer>
   )
