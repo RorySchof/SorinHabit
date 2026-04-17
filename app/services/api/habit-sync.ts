@@ -335,10 +335,17 @@ export async function hydrateFromSupabase() {
           })(),
     }))
 
+    // const normalizedLogs = logs.map((l) => ({
+    //   ...l,
+    //   habitId: l.habit_id ?? l.habitId,
+    // }))
+
     const normalizedLogs = logs.map((l) => ({
-      ...l,
-      habitId: l.habit_id ?? l.habitId,
+      habitId: l.habit_id,
+      date: l.date,      // keep full timestamp here
+      count: l.count,
     }))
+    
 
     console.log(
       `📥 Hydrating from Supabase → ${normalizedHabits.length} habits, ${normalizedLogs.length} logs`

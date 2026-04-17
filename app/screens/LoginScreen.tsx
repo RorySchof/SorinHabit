@@ -209,9 +209,9 @@ export const LoginScreen = observer(() => {
             disabled={!canSubmit}
             onPress={async () => {
               await authStore.signIn(email.trim(), password.trim())
-              if (authStore.user) {
-                await migrateGuestDataToSupabase()
-              }
+              // if (authStore.user) {
+              //   await migrateGuestDataToSupabase()
+              // }
             }}
             style={{
               backgroundColor: canSubmit
