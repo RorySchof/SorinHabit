@@ -11,6 +11,7 @@ import { supabase } from "app/services/api/supabase"
 import { authStore } from "app/models/auth-store"
 import { syncHabitToSupabase, syncActivityToSupabase } from "app/services/api/habit-sync"
 import * as Haptics from "expo-haptics"
+import { getSnapshot } from "mobx-state-tree"
 
 
 // REMINDER OFFSETS --------------------------------------------
@@ -353,15 +354,43 @@ export const HabitStoreModel = types
   )
     },
 
-    reconcileHabitId(localId: string, supabaseId: string) {
-      const habit = self.habits.find((h) => h.id === localId)
-      if (habit) {
-        habit.id = supabaseId
-      }
+    // reconcileHabitId(localId: string, supabaseId: string) {
+    //   const habit = self.habits.find((h) => h.id === localId)
+    //   if (habit) {
+    //     habit.id = supabaseId
+    //   }
 
-      self.activityLog.forEach((log) => {
+    //   self.activityLog.forEach((log) => {
+    //     if (log.habitId === localId) {
+    //       log.habitId = supabaseId
+    //     }
+    //   })
+    // },
+
+
+    reconcileHabitId(localId: string, supabaseId: string) {
+      const index = self.habits.findIndex((h) => h.id === localId)
+      if (index === -1) return
+    
+      const oldHabit = self.habits[index]
+    
+      // Create a new snapshot with the new ID
+      const newHabitSnapshot = {
+        ...getSnapshot(oldHabit),
+        id: supabaseId,
+      }
+    
+      // Replace the habit entirely
+      self.habits[index] = HabitModel.create(newHabitSnapshot)
+    
+      // Update logs by replacing nodes
+      self.activityLog.forEach((log, idx) => {
         if (log.habitId === localId) {
-          log.habitId = supabaseId
+          const snap = getSnapshot(log)
+          self.activityLog[idx] = ActivityLogModel.create({
+            ...snap,
+            habitId: supabaseId,
+          })
         }
       })
     },
@@ -549,7 +578,7 @@ export interface HabitStoreType extends Instance<typeof HabitStoreModel> {
 
 export const habitStore = HabitStoreModel.create({ habits: [], activityLog: [] }) as HabitStoreType
 
-habitStore.load()
+// habitStore.load()
 
 onSnapshot(habitStore, (snapshot) => {
   AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot))

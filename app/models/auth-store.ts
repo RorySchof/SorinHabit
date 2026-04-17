@@ -10,6 +10,8 @@ class AuthStore {
   loading = false
   error: string | null = null
 
+  // single source of truth for hydration
+
   constructor() {
     makeAutoObservable(this, {
       setUser: true, // mark setUser as an action
@@ -18,9 +20,9 @@ class AuthStore {
 
     supabase.auth.onAuthStateChange((_event, session) => {
       this.setUser(session?.user ?? null)
-      if (this.user) {
-        migrateGuestDataToSupabase().then(() => hydrateFromSupabase())
-      }
+      // if (this.user) {
+      //   migrateGuestDataToSupabase().then(() => hydrateFromSupabase())
+      // }
     })
   }
 
@@ -31,43 +33,43 @@ class AuthStore {
   async loadSession() {
     const { data } = await supabase.auth.getSession()
     this.setUser(data?.session?.user ?? null)
+  
     if (this.user) {
-      await hydrateFromSupabase()
+      // ❗ Do NOT auto-hydrate here — migration or manual hydration will handle it
+      return
+    } else {
+      await habitStore.load()
     }
   }
-
+  
   async signUp(email: string, password: string) {
     this.loading = true
     this.error = null
   
     try {
-      // 1. Create the account
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-      })
-  
+      const { error: signUpError } = await supabase.auth.signUp({ email, password })
       if (signUpError) {
         this.error = signUpError.message
         return
       }
   
-      // 2. Auto-login after signup
       const { data: signInData, error: signInError } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
+        await supabase.auth.signInWithPassword({ email, password })
   
       if (signInError) {
         this.error = signInError.message
         return
       }
   
-      // 3. Set user
       this.setUser(signInData.user)
   
-      // 4. Hydrate habits (new user = empty)
+      // ⭐ ensure guest data is loaded
+      await habitStore.load()
+  
+      // ⭐ migrate guest → cloud
+      await migrateGuestDataToSupabase()
+  
+      // ⭐ hydrate cloud → store
       await hydrateFromSupabase()
   
     } finally {
@@ -75,19 +77,26 @@ class AuthStore {
     }
   }
   
-
   async signIn(email: string, password: string) {
     this.loading = true
     this.error = null
+  
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) this.error = error.message
-    this.setUser(data?.user ?? null)
-    this.loading = false
-
-    if (this.user) {
-      await hydrateFromSupabase()
+    if (error) {
+      this.error = error.message
+      this.loading = false
+      return
     }
+  
+    this.setUser(data.user)
+  
+    await habitStore.load()
+    await migrateGuestDataToSupabase()
+    await hydrateFromSupabase()
+  
+    this.loading = false
   }
+  
 
   async signOut() {
     try {
