@@ -43,10 +43,10 @@ export const scheduleHabitReminder = flow(function* scheduleHabitReminder(habit)
   const [hours, minutes] = habit.time.split(":").map(Number)
 
   // ⛑️ Guardrail: prevent invalid time strings from breaking scheduling
-if (isNaN(hours) || isNaN(minutes)) {
-  console.log("❌ Invalid time format, skipping reminder:", habit.time)
-  return
-}
+  if (isNaN(hours) || isNaN(minutes)) {
+    console.log("❌ Invalid time format, skipping reminder:", habit.time)
+    return
+  }
 
   const now = new Date()
   const trigger = new Date()
@@ -185,12 +185,12 @@ export const HabitStoreModel = types
   // STORE-LEVEL ACTIONS ---------------------------------------
   .actions((self) => ({
     // ⭐ RESET STORE (used on logout)
-  reset() {
-    applySnapshot(self, {
-      habits: [],
-      activityLog: [],
-    })
-  },
+    reset() {
+      applySnapshot(self, {
+        habits: [],
+        activityLog: [],
+      })
+    },
     // ✅ New store-level action to reconcile log IDs
     reconcileLogHabitId(oldId: string, newId: string) {
       self.activityLog.forEach((log) => {
@@ -202,7 +202,7 @@ export const HabitStoreModel = types
 
     // MASTER STREAK FUNCTION
 
-        calculateHabitStreaks(habit) {
+    calculateHabitStreaks(habit) {
       if (!habit) {
         return { currentStreak: 0, longestStreak: 0 }
       }
@@ -332,14 +332,17 @@ export const HabitStoreModel = types
         frequency: Array.isArray(h.frequency)
           ? h.frequency
           : (() => {
-              try {
-                return JSON.parse(h.frequency || "[]")
-              } catch {
-                return []
-              }
-            })(),
+            try {
+              return JSON.parse(h.frequency || "[]")
+            } catch {
+              return []
+            }
+          })(),
+
+        paused: h.paused ?? false,
+        deleted: h.deleted ?? false,
       }))
-      
+
 
       self.habits.replace(normalizedHabits.map((h) => HabitModel.create(h)))
 
@@ -348,41 +351,28 @@ export const HabitStoreModel = types
         habitId: l.habit_id ?? l.habitId,
       }))
 
-       // ⭐ FIX: replace logs so old MST nodes don’t linger
-  self.activityLog.replace(
-    normalizedLogs.map((l) => ActivityLogModel.create(l))
-  )
+      // ⭐ FIX: replace logs so old MST nodes don’t linger
+      self.activityLog.replace(
+        normalizedLogs.map((l) => ActivityLogModel.create(l))
+      )
     },
-
-    // reconcileHabitId(localId: string, supabaseId: string) {
-    //   const habit = self.habits.find((h) => h.id === localId)
-    //   if (habit) {
-    //     habit.id = supabaseId
-    //   }
-
-    //   self.activityLog.forEach((log) => {
-    //     if (log.habitId === localId) {
-    //       log.habitId = supabaseId
-    //     }
-    //   })
-    // },
 
 
     reconcileHabitId(localId: string, supabaseId: string) {
       const index = self.habits.findIndex((h) => h.id === localId)
       if (index === -1) return
-    
+
       const oldHabit = self.habits[index]
-    
+
       // Create a new snapshot with the new ID
       const newHabitSnapshot = {
         ...getSnapshot(oldHabit),
         id: supabaseId,
       }
-    
+
       // Replace the habit entirely
       self.habits[index] = HabitModel.create(newHabitSnapshot)
-    
+
       // Update logs by replacing nodes
       self.activityLog.forEach((log, idx) => {
         if (log.habitId === localId) {
@@ -478,18 +468,41 @@ export const HabitStoreModel = types
 
     // PAUSE / UNPAUSE ---------------------------------------------------------
 
-    togglePauseHabit(habitId: string) {
-      const habit = self.habits.find((h) => h.id === habitId)
-      if (habit) {
-        habit.paused = !habit.paused
+    // togglePauseHabit(habitId: string) {
+    //   const habit = self.habits.find((h) => h.id === habitId)
+    //   if (habit) {
+    //     habit.paused = !habit.paused
 
-        if (habit.paused) {
-          cancelHabitReminder(habit)
-        } else {
-          scheduleHabitReminder(habit)
-        }
+    //     if (habit.paused) {
+    //       cancelHabitReminder(habit)
+    //     } else {
+    //       scheduleHabitReminder(habit)
+    //     }
+    //   }
+    // },
+
+
+    togglePauseHabit: flow(function* togglePauseHabit(habitId: string) {
+      const habit = self.habits.find((h) => h.id === habitId)
+      if (!habit) return
+
+      habit.paused = !habit.paused
+
+      if (habit.paused) {
+        cancelHabitReminder(habit)
+      } else {
+        scheduleHabitReminder(habit)
       }
-    },
+
+      // ⭐ Persist pause state to Supabase
+      if (authStore.user) {
+        yield supabase
+          .from("habits")
+          .update({ paused: habit.paused })
+          .eq("id", habit.id)
+      }
+    }),
+
 
     // STREAK CALCULATION (SIMPLE) --------------------------------------------
 
@@ -531,18 +544,35 @@ export const HabitStoreModel = types
           applySnapshot(self, snapshot)
         } else {
         }
-      } catch (error) {}
+      } catch (error) { }
     },
 
     // REMOVE HABIT ------------------------------------------------------------
 
-    removeHabit(id: string) {
+    // removeHabit(id: string) {
+    //   const habit = self.habits.find((h) => h.id === id)
+    //   if (habit) {
+    //     cancelHabitReminder(habit)
+    //     habit.deleted = true
+    //   }
+    // },
+
+    removeHabit: flow(function* removeHabit(id: string) {
       const habit = self.habits.find((h) => h.id === id)
-      if (habit) {
-        cancelHabitReminder(habit)
-        habit.deleted = true
+      if (!habit) return
+
+      cancelHabitReminder(habit)
+      habit.deleted = true
+
+      // ⭐ Persist delete to Supabase
+      if (authStore.user) {
+        yield supabase
+          .from("habits")
+          .update({ deleted: true })
+          .eq("id", habit.id)
       }
-    },
+    }),
+
 
     // UPDATE HABIT ------------------------------------------------------------
 
@@ -550,22 +580,17 @@ export const HabitStoreModel = types
       const habit = self.habits.find((h) => h.id === id)
       if (habit) {
         console.log("✏️ Updating habit:", habit.name, "Updates:", updates)
-    
+
         cancelHabitReminder(habit)
-    
+
         Object.entries(updates).forEach(([key, value]) => {
           habit[key] = value
         })
-    
+
         console.log("🔄 Rescheduling after update:", habit.name)
         scheduleHabitReminder(habit)
       }
     }
-    
-    
-
-    // STREAK CALCULATION (FULL) ----------------------------------------------
-
 
   }))
 
@@ -582,8 +607,8 @@ export const habitStore = HabitStoreModel.create({ habits: [], activityLog: [] }
 
 onSnapshot(habitStore, (snapshot) => {
   AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot))
-    .then(() => {})
-    .catch((error) => {})
+    .then(() => { })
+    .catch((error) => { })
 })
 
 
