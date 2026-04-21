@@ -335,28 +335,59 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                   simultaneousHandlers={scrollRef}
                   activeOffsetX={[-40, 40]}
                   activeOffsetY={[-5, 5]}
+
+
+                  // onEnded={({ nativeEvent }) => {
+                  //   if (!matchedHabit) return
+                  //   const todayCount = getTodayCount(matchedHabit.id)
+                  //   const isAtMax = todayCount >= matchedHabit.target
+                  //   const isAtMin = todayCount <= 0
+
+                  //   if (nativeEvent.translationY < -30 && !isAtMax) {
+                  //     const isCompleting = todayCount + 1 === matchedHabit.target
+
+                  //     if (isCompleting) {
+                  //       triggerCompletionPulse()
+                  //       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+                  //     } else {
+                  //       triggerPulse()
+                  //     }
+
+                  //     habitStore.incrementHabit(matchedHabit.id, selected)
+                  //   } else if (nativeEvent.translationY > 30 && !isAtMin) {
+                  //     habitStore.decrementHabit(matchedHabit.id, selected)
+                  //   }
+                  // }}
+
                   onEnded={({ nativeEvent }) => {
                     if (!matchedHabit) return
+                  
                     const todayCount = getTodayCount(matchedHabit.id)
                     const isAtMax = todayCount >= matchedHabit.target
                     const isAtMin = todayCount <= 0
-
+                  
+                    // ⭐ Swipe UP → complete habit
                     if (nativeEvent.translationY < -30 && !isAtMax) {
-                      const isCompleting = todayCount + 1 === matchedHabit.target
-
-                      if (isCompleting) {
-                        triggerCompletionPulse()
-                        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-                      } else {
-                        triggerPulse()
-                      }
-
-                      habitStore.incrementHabit(matchedHabit.id, selected)
-                    } else if (nativeEvent.translationY > 30 && !isAtMin) {
+                      triggerCompletionPulse()
+                      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+                  
+                      habitStore.completeHabit(matchedHabit.id, selected)
+                  
+                    // ⭐ Swipe DOWN → decrement (unchanged)
+                  } else if (nativeEvent.translationY > 30) {
+                    if (isAtMax) {
+                      // ⭐ If habit is completed → reset to zero
+                      habitStore.resetHabit(matchedHabit.id, selected)
+                    } else if (!isAtMin) {
+                      // ⭐ Otherwise → normal decrement
                       habitStore.decrementHabit(matchedHabit.id, selected)
                     }
+                  }
                   }}
-                >
+                  
+                  
+                  
+                  >
                   <Card
                     style={$checkInCardStyle}
                     verticalAlignment="space-between"

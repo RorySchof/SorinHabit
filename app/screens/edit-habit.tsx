@@ -17,13 +17,22 @@ interface EditHabitScreenProps extends HomeStackScreenProps<"EditHabit"> {}
 
 //COMPONENTS
 
+// const reminders = [
+//   "At the habit time",
+//   "5 minutes before",
+//   "10 minutes before",
+//   "15 minutes before",
+//   "30 minutes before",
+// ]
+
 const reminders = [
   "At the habit time",
   "5 minutes before",
-  "10 minutes before",
   "15 minutes before",
   "30 minutes before",
+  "60 minutes before",
 ]
+
 
 
 function parseTimeStringToDate(time: string): Date {
@@ -153,6 +162,7 @@ export const EditHabitScreen: FC<EditHabitScreenProps> = observer(function EditH
         time: normalizedTime,   // ← FIXED
         target,
         unit,
+        reminder,
       })
   
       if (habitStore.saveHabits) {

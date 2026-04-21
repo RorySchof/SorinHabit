@@ -41,13 +41,22 @@ export const presetColors = [
   "#A52A2A", // brown
 ]
 
+// const REMINDER_OPTIONS = [
+//   "At the habit time",
+//   "5 minutes before",
+//   "10 minutes before",
+//   "15 minutes before",
+//   "30 minutes before",
+// ]
+
 const REMINDER_OPTIONS = [
   "At the habit time",
   "5 minutes before",
-  "10 minutes before",
   "15 minutes before",
   "30 minutes before",
+  "60 minutes before",
 ]
+
 
 // INTERFACE --------------------------------------------------
 

@@ -16,6 +16,14 @@ import { getSnapshot } from "mobx-state-tree"
 
 // REMINDER OFFSETS --------------------------------------------
 
+// const reminderOffsets: Record<string, number> = {
+//   "At the habit time": 0,
+//   "5 minutes before": 5,
+//   "10 minutes before": 10,
+//   "15 minutes before": 15,
+//   "30 minutes before": 30,
+// }
+
 const reminderOffsets: Record<string, number> = {
   "At the habit time": 0,
   "5 minutes before": 5,
@@ -466,21 +474,64 @@ export const HabitStoreModel = types
       syncActivityToSupabase(id, dateStr, habit.current)
     },
 
+    // COMPLETE HABIT SWIPE ---------------------------------------------------------------
+
+    completeHabit(id: string, dateStr: string) {
+      const habit = self.habits.find((h) => h.id === id)
+      if (!habit) return
+      if (habit.paused) return
+    
+      const today = dateStr
+      const target = habit.target
+    
+      let logEntry = self.activityLog.find(
+        (entry) => entry.habitId === id && entry.date === today
+      )
+    
+      if (logEntry) {
+        logEntry.count = target
+      } else {
+        self.activityLog.push({
+          habitId: id,
+          date: today,
+          count: target,
+        })
+      }
+    
+      habit.current = target
+    
+      self.recalculateTodayProgressForHabit(habit)
+      self.calculateHabitStreaks(habit)
+    },
+
+    // ZERO HABIT SWIPE ---------------------------------------------------------------
+
+resetHabit(id: string, dateStr: string) {
+  const habit = self.habits.find((h) => h.id === id)
+  if (!habit) return
+  if (habit.paused) return
+
+  const today = dateStr
+
+  // Remove today's log entry entirely
+  const idx = self.activityLog.findIndex(
+    (entry) => entry.habitId === id && entry.date === today
+  )
+
+  if (idx !== -1) {
+    self.activityLog.splice(idx, 1)
+  }
+
+  habit.current = 0
+
+  self.recalculateTodayProgressForHabit(habit)
+  self.calculateHabitStreaks(habit)
+},
+    
+
+
+
     // PAUSE / UNPAUSE ---------------------------------------------------------
-
-    // togglePauseHabit(habitId: string) {
-    //   const habit = self.habits.find((h) => h.id === habitId)
-    //   if (habit) {
-    //     habit.paused = !habit.paused
-
-    //     if (habit.paused) {
-    //       cancelHabitReminder(habit)
-    //     } else {
-    //       scheduleHabitReminder(habit)
-    //     }
-    //   }
-    // },
-
 
     togglePauseHabit: flow(function* togglePauseHabit(habitId: string) {
       const habit = self.habits.find((h) => h.id === habitId)
@@ -548,14 +599,6 @@ export const HabitStoreModel = types
     },
 
     // REMOVE HABIT ------------------------------------------------------------
-
-    // removeHabit(id: string) {
-    //   const habit = self.habits.find((h) => h.id === id)
-    //   if (habit) {
-    //     cancelHabitReminder(habit)
-    //     habit.deleted = true
-    //   }
-    // },
 
     removeHabit: flow(function* removeHabit(id: string) {
       const habit = self.habits.find((h) => h.id === id)
