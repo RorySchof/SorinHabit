@@ -272,7 +272,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                   marginLeft: 2,
                 }}
               >
-                swipe up/down to adjust ×
+                Swipe up to complete habit ×
               </Text>
             </Pressable>
           )}
@@ -336,58 +336,33 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                   activeOffsetX={[-40, 40]}
                   activeOffsetY={[-5, 5]}
 
-
-                  // onEnded={({ nativeEvent }) => {
-                  //   if (!matchedHabit) return
-                  //   const todayCount = getTodayCount(matchedHabit.id)
-                  //   const isAtMax = todayCount >= matchedHabit.target
-                  //   const isAtMin = todayCount <= 0
-
-                  //   if (nativeEvent.translationY < -30 && !isAtMax) {
-                  //     const isCompleting = todayCount + 1 === matchedHabit.target
-
-                  //     if (isCompleting) {
-                  //       triggerCompletionPulse()
-                  //       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-                  //     } else {
-                  //       triggerPulse()
-                  //     }
-
-                  //     habitStore.incrementHabit(matchedHabit.id, selected)
-                  //   } else if (nativeEvent.translationY > 30 && !isAtMin) {
-                  //     habitStore.decrementHabit(matchedHabit.id, selected)
-                  //   }
-                  // }}
-
                   onEnded={({ nativeEvent }) => {
                     if (!matchedHabit) return
-                  
+
                     const todayCount = getTodayCount(matchedHabit.id)
                     const isAtMax = todayCount >= matchedHabit.target
                     const isAtMin = todayCount <= 0
-                  
+
                     // ⭐ Swipe UP → complete habit
                     if (nativeEvent.translationY < -30 && !isAtMax) {
                       triggerCompletionPulse()
                       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-                  
+
                       habitStore.completeHabit(matchedHabit.id, selected)
-                  
-                    // ⭐ Swipe DOWN → decrement (unchanged)
-                  } else if (nativeEvent.translationY > 30) {
-                    if (isAtMax) {
-                      // ⭐ If habit is completed → reset to zero
-                      habitStore.resetHabit(matchedHabit.id, selected)
-                    } else if (!isAtMin) {
-                      // ⭐ Otherwise → normal decrement
-                      habitStore.decrementHabit(matchedHabit.id, selected)
+
+                      // ⭐ Swipe DOWN → decrement (unchanged)
+                    } else if (nativeEvent.translationY > 30) {
+                      if (isAtMax) {
+                        // ⭐ If habit is completed → reset to zero
+                        habitStore.resetHabit(matchedHabit.id, selected)
+                      } else if (!isAtMin) {
+                        // ⭐ Otherwise → normal decrement
+                        habitStore.decrementHabit(matchedHabit.id, selected)
+                      }
                     }
-                  }
-                  }}
-                  
-                  
-                  
-                  >
+                  }} >
+
+
                   <Card
                     style={$checkInCardStyle}
                     verticalAlignment="space-between"
@@ -485,34 +460,34 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
           <Text tx="homeScreen.today" preset="subheading" />
           <View style={$bottomContainer}>
             {allHabits.length === 0 ? (
-              //  CASE 1: Brand-new user — no habits exist
               <View style={$emptyStateContainer}>
-                <View style={$emojiContainer}>
-                  <Text text="🌱" size="xl" style={$emojiText} />
+                <View style={$emptyEmojiContainer}>
+                  <Image source={CheckMarkBlue} style={$emptyStateIcon} />
                 </View>
 
                 <Text
                   text="Create your first habit"
                   preset="heading"
                   size="md"
-                  style={{ textAlign: "center", color: colors.text }}
+                  style={{ textAlign: "center" }}
                 />
 
                 <Text
-                  text="Tap below to create your first habit and start your streak."
+                  text="Start small. Build momentum. Create your first habit to begin your streak."
                   preset="default"
                   size="sm"
                   style={{
                     textAlign: "center",
                     color: colors.palette.neutral600,
+                    marginTop: spacing.xs,
                   }}
                 />
 
                 <TouchableOpacity
                   onPress={() => navigation.navigate("CreateNewHabit")}
                   style={{
-                    marginTop: spacing.md,
-                    backgroundColor: colors.palette.primary600,
+                    marginTop: spacing.lg,
+                    backgroundColor: "#304FFE",
                     borderRadius: spacing.xs,
                     paddingVertical: spacing.sm,
                     paddingHorizontal: spacing.lg,
@@ -526,8 +501,13 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                   />
                 </TouchableOpacity>
               </View>
+
+
+
             ) : filteredHabits.length === 0 ? (
+
               // CASE 2: User has habits, but none scheduled today
+
               <View style={$emptyStateContainer}>
                 <View style={$emojiContainer}>
                   <Text text="🗓️" size="xl" style={$emojiText} />
@@ -559,6 +539,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                 </TouchableOpacity>
               </View>
             ) : (
+
               // CASE 3: Normal habit list for today
 
               filteredHabits.map((habit, idx) => {
@@ -849,4 +830,20 @@ const $emptyStateContainer: ViewStyle = {
   alignItems: "center",
   justifyContent: "center",
   gap: spacing.sm,
+}
+
+const $emptyEmojiContainer: ViewStyle = {
+  backgroundColor: colors.palette.neutral100,
+  width: 64,
+  height: 64,
+  borderRadius: 99,
+  alignItems: "center",
+  justifyContent: "center",
+  marginBottom: spacing.xs,
+}
+
+const $emptyStateIcon: ImageStyle = {
+  width: 80,
+  height: 80,
+  resizeMode: "contain",
 }
