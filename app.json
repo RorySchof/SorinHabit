@@ -9,9 +9,9 @@
     "orientation": "portrait",
     "icon": "./assets/images/CheckMarkBlue.png",
     "splash": {
-      "image": "./assets/images/Splash.png",
+      "image": "./assets/images/WhiteSplash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#191015"
+      "backgroundColor": "#FFFFFF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -30,7 +30,7 @@
       "splash": {
         "image": "./assets/images/WhiteSplash.png",
         "resizeMode": "contain",
-        "backgroundColor": "#191015"
+        "backgroundColor": "#FFFFFF"
       }
     },
     "ios": {
@@ -39,10 +39,10 @@
       "bundleIdentifier": "com.habitrak.app.ios",
       "buildNumber": "2",
       "splash": {
-        "image": "./assets/images/Splash.png",
-        "tabletImage": "./assets/images/Splash.png",
+        "image": "./assets/images/WhiteSplash.png",
+        "tabletImage": "./assets/images/WhiteSplash.png",
         "resizeMode": "contain",
-        "backgroundColor": "#191015"
+        "backgroundColor": "#FFFFFF"
       },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
