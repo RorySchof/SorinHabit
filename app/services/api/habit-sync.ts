@@ -270,15 +270,53 @@ export async function syncHabitToSupabase(habit: any) {
   }
 }
 
+
+
 // -------------------------------------------------------------
 // SYNC ACTIVITY
 // -------------------------------------------------------------
+// export async function syncActivityToSupabase(habitId: string, date: string, count: number) {
+//   const userId = authStore.user?.id
+//   if (!userId) return
+
+//   try {
+//     const { error } = await supabase
+//       .from("activity_log")
+//       .upsert(
+//         {
+//           user_id: userId,
+//           habit_id: habitId,
+//           date,
+//           count,
+//         },
+//         { onConflict: "user_id,habit_id,date" }
+//       )
+
+//     if (error) {
+//       console.log("❌ Activity sync error:", error.message)
+//     }
+//   } catch (e) {
+//     console.log("❌ Activity sync exception:", e)
+//   }
+// }
+
 export async function syncActivityToSupabase(habitId: string, date: string, count: number) {
   const userId = authStore.user?.id
-  if (!userId) return
+  if (!userId) {
+    console.log("🟥 SYNC ABORTED — no userId")
+    return
+  }
+
+  console.log("🟦 SYNC START", { habitId, date, count, userId })
 
   try {
-    const { error } = await supabase
+    // 1) Upsert activity log
+    console.log("🟨 UPSERTING ACTIVITY LOG", {
+      table: "activity_log",
+      payload: { user_id: userId, habit_id: habitId, date, count },
+    })
+
+    const { error: logError, data: logData } = await supabase
       .from("activity_log")
       .upsert(
         {
@@ -289,14 +327,40 @@ export async function syncActivityToSupabase(habitId: string, date: string, coun
         },
         { onConflict: "user_id,habit_id,date" }
       )
+      .select()
 
-    if (error) {
-      console.log("❌ Activity sync error:", error.message)
+    console.log("🟧 UPSERT RESULT", { logError, logData })
+
+    if (logError) {
+      console.log("❌ Activity sync error:", logError.message)
     }
+
+    // 2) Keep habits.current in sync with latest count
+    console.log("🟨 UPDATING HABIT CURRENT", {
+      table: "habits",
+      habitId,
+      current: count,
+    })
+
+    const { error: habitError, data: habitData } = await supabase
+      .from("habits")
+      .update({ current: count })
+      .eq("id", habitId)
+      .select()
+
+    console.log("🟩 HABIT UPDATE RESULT", { habitError, habitData })
+
+    if (habitError) {
+      console.log("❌ Habit current sync error:", habitError.message)
+    }
+
+    console.log("🟦 SYNC COMPLETE")
   } catch (e) {
     console.log("❌ Activity sync exception:", e)
   }
 }
+
+
 
 // -------------------------------------------------------------
 // HYDRATE FROM SUPABASE
@@ -356,6 +420,8 @@ export async function hydrateFromSupabase() {
     console.log("❌ Hydration exception:", e)
   }
 }
+
+
 
 // -------------------------------------------------------------
 // MIGRATE GUEST DATA → SUPABASE

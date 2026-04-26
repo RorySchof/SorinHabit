@@ -502,7 +502,11 @@ export const HabitStoreModel = types
     
       self.recalculateTodayProgressForHabit(habit)
       self.calculateHabitStreaks(habit)
+    
+      // 🔥 Supabase sync (missing before)
+      syncActivityToSupabase(id, dateStr, habit.current)
     },
+    
 
     // ZERO HABIT SWIPE ---------------------------------------------------------------
 
@@ -526,6 +530,11 @@ resetHabit(id: string, dateStr: string) {
 
   self.recalculateTodayProgressForHabit(habit)
   self.calculateHabitStreaks(habit)
+
+  // 🔥 Supabase sync (missing before)
+  syncActivityToSupabase(id, dateStr, 0)
+
+  
 },
     
 
