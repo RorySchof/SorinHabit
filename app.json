@@ -5,7 +5,7 @@
     "name": "HabiTrak",
     "slug": "habittracker",
     "scheme": "habitrak",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/CheckMarkBlue.png",
     "splash": {
@@ -37,7 +37,7 @@
       "icon": "./assets/images/CheckMarkBlue.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.habitrak.app.ios",
-      "buildNumber": "2",
+      "buildNumber": "1",
       "splash": {
         "image": "./assets/images/WhiteSplash.png",
         "tabletImage": "./assets/images/WhiteSplash.png",
