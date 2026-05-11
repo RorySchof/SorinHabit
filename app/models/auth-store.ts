@@ -1,4 +1,5 @@
 // app/models/auth-store.ts
+
 import { makeAutoObservable, runInAction } from "mobx"
 import { supabase } from "app/services/api/supabase"
 import { hydrateFromSupabase, migrateGuestDataToSupabase } from "app/services/api/habit-sync"
@@ -134,6 +135,37 @@ class AuthStore {
       console.log("Logout error:", e)
     }
   }
+
+  async deleteAccount() {
+    try {
+      const userId = this.user?.id
+      if (!userId) return
+  
+      // 1. Call your deployed Edge Function
+      const { data, error } = await supabase.functions.invoke("delete-user", {
+        body: { userId },
+      })
+  
+      if (error) throw error
+  
+      // 2. Clear local storage
+      await AsyncStorage.clear()
+  
+      // 3. Reset habit store
+      habitStore.reset()
+  
+      // 4. Reset auth state
+      runInAction(() => {
+        this.user = null
+        this.error = null
+        this.loading = false
+      })
+    } catch (e) {
+      console.log("Delete account error:", e)
+    }
+  }
+  
+  
 }
 
 export const authStore = new AuthStore()

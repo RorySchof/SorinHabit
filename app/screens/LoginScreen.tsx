@@ -16,6 +16,7 @@ import { authStore } from "app/models/auth-store"
 import { migrateGuestDataToSupabase } from "app/services/api/habit-sync"
 import CheckMarkBlue from "assets/images/CheckMarkBlue.png"
 import { useNavigation } from "@react-navigation/native"
+import { Alert } from "react-native"
 
 export const LoginScreen = observer(() => {
   const navigation = useNavigation()
@@ -96,6 +97,38 @@ export const LoginScreen = observer(() => {
           >
             <Text text="Logout" style={{ color: "#fff", fontWeight: "600" }} />
           </TouchableOpacity>
+
+          <TouchableOpacity
+  onPress={() => {
+    Alert.alert(
+      "Delete account",
+      "This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            await authStore.deleteAccount()
+          },
+        },
+      ]
+    )
+  }}
+  style={{ marginTop: spacing.sm }}
+>
+  <Text
+    text="Delete account"
+    size="xs"
+    style={{
+      color: colors.palette.primary600,
+      fontWeight: "500",
+    }}
+  />
+</TouchableOpacity>
+
+
+
         </View>
       </View>
     )

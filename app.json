@@ -1,15 +1,15 @@
 {
-  "name": "HabiTrak",
-  "displayName": "HabiTrak",
+  "name": "Sorin",
+  "displayName": "Sorin",
   "expo": {
-    "name": "HabiTrak",
+    "name": "Sorin",
     "slug": "habittracker",
-    "scheme": "habitrak",
+    "scheme": "sorin",
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/CheckMarkBlue.png",
     "splash": {
-      "image": "./assets/images/WhiteSplash.png",
+      "image": "./assets/images/SorinSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
@@ -28,7 +28,7 @@
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
       },
       "splash": {
-        "image": "./assets/images/WhiteSplash.png",
+        "image": "./assets/images/SorinSplash.png",
         "resizeMode": "contain",
         "backgroundColor": "#FFFFFF"
       }
@@ -36,11 +36,10 @@
     "ios": {
       "icon": "./assets/images/CheckMarkBlue.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.habitrak.app.ios",
-      "buildNumber": "1",
+      "bundleIdentifier": "com.sorin.app.ios",
       "splash": {
-        "image": "./assets/images/WhiteSplash.png",
-        "tabletImage": "./assets/images/WhiteSplash.png",
+        "image": "./assets/images/SorinSplash.png",
+        "tabletImage": "./assets/images/SorinSplash.png",
         "resizeMode": "contain",
         "backgroundColor": "#FFFFFF"
       },
@@ -51,7 +50,7 @@
     "web": {
       "favicon": "./assets/images/CheckMarkBlue.png",
       "splash": {
-        "image": "./assets/images/Splash.png",
+        "image": "./assets/images/SorinSplash.png",
         "resizeMode": "contain",
         "backgroundColor": "#191015"
       },
@@ -87,3 +86,4 @@
     "version": "9.6.2"
   }
 }
+
