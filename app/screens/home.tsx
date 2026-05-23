@@ -457,116 +457,114 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         {/* TODAY'S HABIT LIST -------------------------------------------------- */}
 
         <View style={{ gap: spacing.md }}>
-          <Text tx="homeScreen.today" preset="subheading" />
-          <View style={$bottomContainer}>
-            {allHabits.length === 0 ? (
-              <View style={$emptyStateContainer}>
-                <View style={$emptyEmojiContainer}>
-                  <Image source={CheckMarkBlue} style={$emptyStateIcon} />
-                </View>
-
-                <Text
-                  text="Create your first habit"
-                  preset="heading"
-                  size="md"
-                  style={{ textAlign: "center" }}
-                />
-
-                <Text
-                  text="Start small. Build momentum. Create your first habit to begin your streak."
-                  preset="default"
-                  size="sm"
-                  style={{
-                    textAlign: "center",
-                    color: colors.palette.neutral600,
-                    marginTop: spacing.xs,
-                  }}
-                />
-
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("CreateNewHabit")}
-                  style={{
-                    marginTop: spacing.lg,
-                    backgroundColor: "#304FFE",
-                    borderRadius: spacing.xs,
-                    paddingVertical: spacing.sm,
-                    paddingHorizontal: spacing.lg,
-                  }}
-                >
-                  <Text
-                    text="Create a new habit"
-                    preset="bold"
-                    size="md"
-                    style={{ color: colors.palette.neutral100 }}
-                  />
-                </TouchableOpacity>
-              </View>
-
-
-
-            ) : filteredHabits.length === 0 ? (
-
-              // CASE 2: User has habits, but none scheduled today
-
-              <View style={$emptyStateContainer}>
-                <View style={$emojiContainer}>
-                  <Text text="🗓️" size="xl" style={$emojiText} />
-                </View>
-
-                <Text
-                  text="No habits scheduled for today"
-                  preset="heading"
-                  size="md"
-                  style={{ textAlign: "center", color: colors.text }}
-                />
-
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("CreateNewHabit")}
-                  style={{
-                    marginTop: spacing.md,
-                    backgroundColor: colors.palette.primary600,
-                    borderRadius: spacing.xs,
-                    paddingVertical: spacing.sm,
-                    paddingHorizontal: spacing.lg,
-                  }}
-                >
-                  <Text
-                    text="Create a new habit"
-                    preset="bold"
-                    size="md"
-                    style={{ color: colors.palette.neutral100 }}
-                  />
-                </TouchableOpacity>
-              </View>
-            ) : (
-
-              // CASE 3: Normal habit list for today
-
-              filteredHabits.map((habit, idx) => {
-                const todayCount = getTodayCount(habit.id)
-                const transformedHabit = {
-                  id: habit.id,
-                  name: habit.name || "Unnamed Habit",
-                  emoji: habit.emoji || "🔥",
-                  time: habit.time || "08:00",
-                  current: todayCount,
-                  target: habit.target || 1,
-                  finished: habit.finished ?? false,
-                  paused: habit.paused,
-                }
-                return (
-                  <View key={`${habit.id}-${idx}`} style={{ marginBottom: 12 }}>
-                    <Habit task={transformedHabit} navigation={navigation} />
-                  </View>
-                )
-              })
-            )}
-          </View>
+  <Text tx="homeScreen.today" preset="subheading" />
+  <View style={$bottomContainer}>
+    {allHabits.length === 0 ? (
+      <View style={$emptyStateContainer}>
+        <View style={$emptyEmojiContainer}>
+          <Image source={CheckMarkBlue} style={$emptyStateIcon} />
         </View>
+
+        <Text
+          text="Create your first study session"
+          preset="heading"
+          size="md"
+          style={{ textAlign: "center" }}
+        />
+
+        <Text
+          text="Start small. Build momentum. Create your first study session to begin your streak."
+          preset="default"
+          size="sm"
+          style={{
+            textAlign: "center",
+            color: colors.palette.neutral600,
+            marginTop: spacing.xs,
+          }}
+        />
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("CreateNewHabit")}
+          style={{
+            marginTop: spacing.lg,
+            backgroundColor: "#304FFE",
+            borderRadius: spacing.xs,
+            paddingVertical: spacing.sm,
+            paddingHorizontal: spacing.lg,
+          }}
+        >
+          <Text
+            text="Create a new study session"
+            preset="bold"
+            size="md"
+            style={{ color: colors.palette.neutral100 }}
+          />
+        </TouchableOpacity>
+      </View>
+
+    ) : filteredHabits.length === 0 ? (
+
+      <View style={$emptyStateContainer}>
+        <View style={$emojiContainer}>
+          <Text text="🗓️" size="xl" style={$emojiText} />
+        </View>
+
+        <Text
+          text="No study sessions scheduled for today"
+          preset="heading"
+          size="md"
+          style={{ textAlign: "center", color: colors.text }}
+        />
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("CreateNewHabit")}
+          style={{
+            marginTop: spacing.md,
+            backgroundColor: colors.palette.primary600,
+            borderRadius: spacing.xs,
+            paddingVertical: spacing.sm,
+            paddingHorizontal: spacing.lg,
+          }}
+        >
+          <Text
+            text="Create a new study session"
+            preset="bold"
+            size="md"
+            style={{ color: colors.palette.neutral100 }}
+          />
+        </TouchableOpacity>
+      </View>
+
+    ) : (
+
+      filteredHabits.map((habit, idx) => {
+        const todayCount = getTodayCount(habit.id)
+        const transformedHabit = {
+          id: habit.id,
+          name: habit.name || "Unnamed Study Session",
+          emoji: habit.emoji || "🔥",
+          time: habit.time || "08:00",
+          current: todayCount,
+          target: habit.target || 1,
+          finished: habit.finished ?? false,
+          paused: habit.paused,
+        }
+
+        return (
+          <View key={`${habit.id}-${idx}`} style={{ marginBottom: 12 }}>
+            <Habit task={transformedHabit} navigation={navigation} />
+          </View>
+        )
+      })
+    )}
+  </View>
+</View>
+
       </Screen>
     </SafeAreaView>
   )
 })
+
 
 // HABIT ROW COMPONENT
 

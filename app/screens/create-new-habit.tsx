@@ -43,16 +43,9 @@ export const presetColors = [
   "#A52A2A", // brown
 ]
 
-// const REMINDER_OPTIONS = [
-//   "At the habit time",
-//   "5 minutes before",
-//   "10 minutes before",
-//   "15 minutes before",
-//   "30 minutes before",
-// ]
 
 const REMINDER_OPTIONS = [
-  "At the habit time",
+  "At the study session time",
   "5 minutes before",
   "15 minutes before",
   "30 minutes before",
@@ -171,252 +164,498 @@ export const CreateNewHabitScreen: FC<CreateNewHabitScreenProps> = observer(
     // RENDER --------------------------------------------------
 
     return (
+
       <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
-        {/* HEADER -------------------------------------------------- */}
-        <View style={$cardContainer}>
-          <View style={$headerContainer}>
-            <Icon icon="back" color={colors.text} onPress={() => navigation.goBack()} />
-            <Text text="Create Habit" preset="heading" size="lg" />
-          </View>
+  <View style={$cardContainer}>
+    <View style={$headerContainer}>
+      <Icon icon="back" color={colors.text} onPress={() => navigation.goBack()} />
+      <Text text="Create Study Session" preset="heading" size="lg" />
+    </View>
 
-          {/* EMOJI + COLOR PICKERS ---------------------------------- */}
-          <View style={$subheaderContainer}>
-            <TouchableOpacity style={$pillContainer} onPress={() => setOpen(!open)}>
-              {selectedEmoji === DEFAULT_HABIT_ICON ? (
-                <Image source={CheckMarkBlue} style={$defaultIconImage} />
-              ) : (
-                <Text text={selectedEmoji} />
-              )}
-            </TouchableOpacity>
+    <View style={$subheaderContainer}>
+      <TouchableOpacity style={$pillContainer} onPress={() => setOpen(!open)}>
+        {selectedEmoji === DEFAULT_HABIT_ICON ? (
+          <Image source={CheckMarkBlue} style={$defaultIconImage} />
+        ) : (
+          <Text text={selectedEmoji} />
+        )}
+      </TouchableOpacity>
 
-            <EmojiPicker
-              onEmojiSelected={(selected) => {
-                setSelectedEmoji(selected.emoji)
-                setOpen(false)
-              }}
-              open={open}
-              onClose={() => setOpen(false)}
-            />
+      <EmojiPicker
+        onEmojiSelected={(selected) => {
+          setSelectedEmoji(selected.emoji)
+          setOpen(false)
+        }}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
 
-            <TouchableOpacity
-              style={$pillContainer}
-              onPress={() => setShowColorPicker(!showColorPicker)}
-            >
-              <View style={[$pickedColor, { backgroundColor: colorPicked }]} />
-            </TouchableOpacity>
+      <TouchableOpacity
+        style={$pillContainer}
+        onPress={() => setShowColorPicker(!showColorPicker)}
+      >
+        <View style={[$pickedColor, { backgroundColor: colorPicked }]} />
+      </TouchableOpacity>
 
-            {showColorPicker && (
-              <View style={$colorPickerCard}>
-                <View style={$swatchGrid}>
-                  {presetColors.map((color) => {
-                    const isSelected = color === colorPicked
-                    return (
-                      <TouchableOpacity
-                        key={color}
-                        onPress={() => {
-                          setColorPicked(color)
-                          setShowColorPicker(false)
-                        }}
-                        style={[
-                          $swatch,
-                          {
-                            backgroundColor: color,
-                            borderColor: isSelected ? "white" : colors.palette.neutral500,
-                            borderWidth: isSelected ? 2 : 1,
-                            elevation: isSelected ? 4 : 2,
-                          },
-                        ]}
-                      />
-                    )
-                  })}
-                </View>
-              </View>
-            )}
-          </View>
-
-          {/* INPUTS -------------------------------------------------- */}
-          <View style={$inputsContainer}>
-            <TextField
-              label="Habit Name"
-              placeholder="Go to the GYM"
-              value={name}
-              onChangeText={setName}
-              required
-            />
-
-            <TextField
-              label="Target"
-              placeholder="0"
-              value={target === 0 ? "" : target.toString()}
-              onChangeText={(text) => setTarget(Number(text) || 0)}
-              keyboardType="numeric"
-              required
-            />
-
-            <TextField label="Unit" placeholder="times" value={unit} onChangeText={setUnit} />
-          </View>
-
-          {/* FREQUENCY -------------------------------------------------- */}
-          <View style={[$gap, { marginTop: spacing.md }]}>
-            <View style={$frequencyContainer}>
-              <Text preset="formLabel" text="Frequency" style={$labelStyle} />
-              <Text text="*" style={$labelRequired} />
-            </View>
-            <View style={$daysContainer}>
-              {days.map((d, idx) => (
+      {showColorPicker && (
+        <View style={$colorPickerCard}>
+          <View style={$swatchGrid}>
+            {presetColors.map((color) => {
+              const isSelected = color === colorPicked
+              return (
                 <TouchableOpacity
-                  key={`day-${d.day}-${idx}`}
+                  key={color}
+                  onPress={() => {
+                    setColorPicked(color)
+                    setShowColorPicker(false)
+                  }}
                   style={[
-                    $dayContainerStyle,
+                    $swatch,
                     {
-                      backgroundColor: frequency.includes(d.day)
-                        ? colors.palette.primary500
-                        : colors.palette.neutral100,
-                      borderWidth: 1,
-                      borderColor: colors.palette.primary500,
+                      backgroundColor: color,
+                      borderColor: isSelected ? "white" : colors.palette.neutral500,
+                      borderWidth: isSelected ? 2 : 1,
+                      elevation: isSelected ? 4 : 2,
                     },
                   ]}
-                  onPress={() => handleSelectFrequency(d)}
-                >
-                  <Text
-                    text={d.abbr}
-                    style={[
-                      $dayStyle,
-                      {
-                        color: frequency.includes(d.day) ? colors.palette.neutral100 : colors.text,
-                      },
-                    ]}
-                    size="md"
-                  />
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* HABIT TIME -------------------------------------------------- */}
-          <View style={[$gap, { marginTop: spacing.md }]}>
-            <View style={$frequencyContainer}>
-              <Text preset="formLabel" text="Habit time" style={$labelStyle} />
-              <Text text="*" style={$labelRequired} />
-            </View>
-
-            <DateTimePicker
-              testID="dateTimePicker"
-              style={$dateTimePicker}
-              value={habitTime}
-              mode="time"
-              is24Hour={false}
-              locale="en-US"
-              accentColor={colors.palette.neutral100}
-              onChange={(_, selectedDate) => setHabitTime(new Date(selectedDate!))}
-            />
-          </View>
-
-          {/* HABIT DATE -------------------------------------------------- */}
-          <View style={[$gap, { marginTop: spacing.md }]}>
-            <View style={$frequencyContainer}>
-              <Text preset="formLabel" text="Habit date" style={$labelStyle} />
-              <Text text="*" style={$labelRequired} />
-            </View>
-            <DateTimePicker
-              testID="datePicker"
-              style={$dateTimePicker}
-              value={habitDate}
-              mode="date"
-              locale="en-US"
-              accentColor={colors.palette.neutral100}
-              onChange={(_, selectedDate) => {
-                if (selectedDate) {
-                  setHabitDate(new Date(selectedDate))
-                }
-              }}
-            />
-          </View>
-
-          {/* REMINDERS -------------------------------------------------- */}
-          <View style={[$gap, { marginTop: spacing.md }]}>
-            <View style={$frequencyContainer}>
-              <Text preset="formLabel" text="Reminders" style={$labelStyle} />
-            </View>
-
-            <TouchableOpacity
-              style={{
-                backgroundColor: colors.palette.neutral200, // ✅ use grey tone like DateTimePicker
-                borderColor: colors.palette.neutral300,
-                borderWidth: 1,
-                borderRadius: spacing.xs,
-                height: 44,
-                paddingHorizontal: spacing.sm,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                alignSelf: "stretch", // ✅ match picker width
-              }}
-              onPress={() => setShowReminderList((s) => !s)}
-            >
-              <Text
-                text={reminder || "Select reminder…"}
-                size="md"
-                style={{ color: reminder ? colors.text : colors.palette.neutral500 }}
-              />
-              <Icon
-                icon="caretRight"
-                style={{ transform: [{ rotate: showReminderList ? "270deg" : "90deg" }] }}
-              />
-            </TouchableOpacity>
-
-            {showReminderList && (
-              <View
-                style={{
-                  backgroundColor: colors.palette.neutral200, // ✅ grey background
-                  borderColor: colors.palette.neutral300,
-                  borderWidth: 1,
-                  borderRadius: spacing.xs,
-                  marginTop: spacing.xs,
-                  overflow: "hidden",
-                }}
-              >
-                {REMINDER_OPTIONS.map((option) => {
-                  const isSelected = reminder === option
-                  return (
-                    <TouchableOpacity
-                      key={option}
-                      style={{
-                        paddingVertical: spacing.xs,
-                        paddingHorizontal: spacing.sm,
-                        backgroundColor: isSelected
-                          ? colors.palette.primary500
-                          : colors.palette.neutral200,
-                      }}
-                      onPress={() => {
-                        setReminder(option)
-                        setShowReminderList(false)
-                      }}
-                    >
-                      <Text
-                        text={option}
-                        size="md"
-                        style={{ color: isSelected ? colors.palette.neutral100 : colors.text }}
-                      />
-                    </TouchableOpacity>
-                  )
-                })}
-              </View>
-            )}
-          </View>
-
-          {/* CREATE BUTTON -------------------------------------------------- */}
-          <View>
-            <Button
-              style={[$btn, { marginTop: spacing.lg }]}
-              textStyle={{ color: colors.palette.neutral100 }}
-              onPress={handleCreateHabit}
-            >
-              Create habit
-            </Button>
+                />
+              )
+            })}
           </View>
         </View>
-      </Screen>
+      )}
+    </View>
+
+    <View style={$inputsContainer}>
+      <TextField
+        label="Study Session Name"
+        placeholder="Read Chapter 3"
+        value={name}
+        onChangeText={setName}
+        required
+      />
+
+      <TextField
+        label="Target"
+        placeholder="0"
+        value={target === 0 ? "" : target.toString()}
+        onChangeText={(text) => setTarget(Number(text) || 0)}
+        keyboardType="numeric"
+        required
+      />
+
+      <TextField label="Unit" placeholder="minutes" value={unit} onChangeText={setUnit} />
+    </View>
+
+    <View style={[$gap, { marginTop: spacing.md }]}>
+      <View style={$frequencyContainer}>
+        <Text preset="formLabel" text="Frequency" style={$labelStyle} />
+        <Text text="*" style={$labelRequired} />
+      </View>
+      <View style={$daysContainer}>
+        {days.map((d, idx) => (
+          <TouchableOpacity
+            key={`day-${d.day}-${idx}`}
+            style={[
+              $dayContainerStyle,
+              {
+                backgroundColor: frequency.includes(d.day)
+                  ? colors.palette.primary500
+                  : colors.palette.neutral100,
+                borderWidth: 1,
+                borderColor: colors.palette.primary500,
+              },
+            ]}
+            onPress={() => handleSelectFrequency(d)}
+          >
+            <Text
+              text={d.abbr}
+              style={[
+                $dayStyle,
+                {
+                  color: frequency.includes(d.day) ? colors.palette.neutral100 : colors.text,
+                },
+              ]}
+              size="md"
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+
+    <View style={[$gap, { marginTop: spacing.md }]}>
+      <View style={$frequencyContainer}>
+        <Text preset="formLabel" text="Study time" style={$labelStyle} />
+        <Text text="*" style={$labelRequired} />
+      </View>
+
+      <DateTimePicker
+        testID="dateTimePicker"
+        style={$dateTimePicker}
+        value={habitTime}
+        mode="time"
+        is24Hour={false}
+        locale="en-US"
+        accentColor={colors.palette.neutral100}
+        onChange={(_, selectedDate) => setHabitTime(new Date(selectedDate!))}
+      />
+    </View>
+
+    <View style={[$gap, { marginTop: spacing.md }]}>
+      <View style={$frequencyContainer}>
+        <Text preset="formLabel" text="Study date" style={$labelStyle} />
+        <Text text="*" style={$labelRequired} />
+      </View>
+
+      <DateTimePicker
+        testID="datePicker"
+        style={$dateTimePicker}
+        value={habitDate}
+        mode="date"
+        locale="en-US"
+        accentColor={colors.palette.neutral100}
+        onChange={(_, selectedDate) => {
+          if (selectedDate) {
+            setHabitDate(new Date(selectedDate))
+          }
+        }}
+      />
+    </View>
+
+    <View style={[$gap, { marginTop: spacing.md }]}>
+      <View style={$frequencyContainer}>
+        <Text preset="formLabel" text="Reminders" style={$labelStyle} />
+      </View>
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: colors.palette.neutral200,
+          borderColor: colors.palette.neutral300,
+          borderWidth: 1,
+          borderRadius: spacing.xs,
+          height: 44,
+          paddingHorizontal: spacing.sm,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          alignSelf: "stretch",
+        }}
+        onPress={() => setShowReminderList((s) => !s)}
+      >
+        <Text
+          text={reminder || "Select reminder…"}
+          size="md"
+          style={{ color: reminder ? colors.text : colors.palette.neutral500 }}
+        />
+        <Icon
+          icon="caretRight"
+          style={{ transform: [{ rotate: showReminderList ? "270deg" : "90deg" }] }}
+        />
+      </TouchableOpacity>
+
+      {showReminderList && (
+        <View
+          style={{
+            backgroundColor: colors.palette.neutral200,
+            borderColor: colors.palette.neutral300,
+            borderWidth: 1,
+            borderRadius: spacing.xs,
+            marginTop: spacing.xs,
+            overflow: "hidden",
+          }}
+        >
+          {REMINDER_OPTIONS.map((option) => {
+            const isSelected = reminder === option
+            return (
+              <TouchableOpacity
+                key={option}
+                style={{
+                  paddingVertical: spacing.xs,
+                  paddingHorizontal: spacing.sm,
+                  backgroundColor: isSelected
+                    ? colors.palette.primary500
+                    : colors.palette.neutral200,
+                }}
+                onPress={() => {
+                  setReminder(option)
+                  setShowReminderList(false)
+                }}
+              >
+                <Text
+                  text={option}
+                  size="md"
+                  style={{ color: isSelected ? colors.palette.neutral100 : colors.text }}
+                />
+              </TouchableOpacity>
+            )
+          })}
+        </View>
+      )}
+    </View>
+
+    <View>
+      <Button
+        style={[$btn, { marginTop: spacing.lg }]}
+        textStyle={{ color: colors.palette.neutral100 }}
+        onPress={handleCreateHabit}
+      >
+        Create study session
+      </Button>
+    </View>
+  </View>
+</Screen>
+
+
+
+
+
+
+      // <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
+      //   {/* HEADER -------------------------------------------------- */}
+      //   <View style={$cardContainer}>
+      //     <View style={$headerContainer}>
+      //       <Icon icon="back" color={colors.text} onPress={() => navigation.goBack()} />
+      //       <Text text="Create Habit!!!!" preset="heading" size="lg" />
+      //     </View>
+
+      //     {/* EMOJI + COLOR PICKERS ---------------------------------- */}
+      //     <View style={$subheaderContainer}>
+      //       <TouchableOpacity style={$pillContainer} onPress={() => setOpen(!open)}>
+      //         {selectedEmoji === DEFAULT_HABIT_ICON ? (
+      //           <Image source={CheckMarkBlue} style={$defaultIconImage} />
+      //         ) : (
+      //           <Text text={selectedEmoji} />
+      //         )}
+      //       </TouchableOpacity>
+
+      //       <EmojiPicker
+      //         onEmojiSelected={(selected) => {
+      //           setSelectedEmoji(selected.emoji)
+      //           setOpen(false)
+      //         }}
+      //         open={open}
+      //         onClose={() => setOpen(false)}
+      //       />
+
+      //       <TouchableOpacity
+      //         style={$pillContainer}
+      //         onPress={() => setShowColorPicker(!showColorPicker)}
+      //       >
+      //         <View style={[$pickedColor, { backgroundColor: colorPicked }]} />
+      //       </TouchableOpacity>
+
+      //       {showColorPicker && (
+      //         <View style={$colorPickerCard}>
+      //           <View style={$swatchGrid}>
+      //             {presetColors.map((color) => {
+      //               const isSelected = color === colorPicked
+      //               return (
+      //                 <TouchableOpacity
+      //                   key={color}
+      //                   onPress={() => {
+      //                     setColorPicked(color)
+      //                     setShowColorPicker(false)
+      //                   }}
+      //                   style={[
+      //                     $swatch,
+      //                     {
+      //                       backgroundColor: color,
+      //                       borderColor: isSelected ? "white" : colors.palette.neutral500,
+      //                       borderWidth: isSelected ? 2 : 1,
+      //                       elevation: isSelected ? 4 : 2,
+      //                     },
+      //                   ]}
+      //                 />
+      //               )
+      //             })}
+      //           </View>
+      //         </View>
+      //       )}
+      //     </View>
+
+      //     {/* INPUTS -------------------------------------------------- */}
+      //     <View style={$inputsContainer}>
+      //       <TextField
+      //         label="Habit Name"
+      //         placeholder="Go to the GYM"
+      //         value={name}
+      //         onChangeText={setName}
+      //         required
+      //       />
+
+      //       <TextField
+      //         label="Target"
+      //         placeholder="0"
+      //         value={target === 0 ? "" : target.toString()}
+      //         onChangeText={(text) => setTarget(Number(text) || 0)}
+      //         keyboardType="numeric"
+      //         required
+      //       />
+
+      //       <TextField label="Unit" placeholder="times" value={unit} onChangeText={setUnit} />
+      //     </View>
+
+      //     {/* FREQUENCY -------------------------------------------------- */}
+      //     <View style={[$gap, { marginTop: spacing.md }]}>
+      //       <View style={$frequencyContainer}>
+      //         <Text preset="formLabel" text="Frequency" style={$labelStyle} />
+      //         <Text text="*" style={$labelRequired} />
+      //       </View>
+      //       <View style={$daysContainer}>
+      //         {days.map((d, idx) => (
+      //           <TouchableOpacity
+      //             key={`day-${d.day}-${idx}`}
+      //             style={[
+      //               $dayContainerStyle,
+      //               {
+      //                 backgroundColor: frequency.includes(d.day)
+      //                   ? colors.palette.primary500
+      //                   : colors.palette.neutral100,
+      //                 borderWidth: 1,
+      //                 borderColor: colors.palette.primary500,
+      //               },
+      //             ]}
+      //             onPress={() => handleSelectFrequency(d)}
+      //           >
+      //             <Text
+      //               text={d.abbr}
+      //               style={[
+      //                 $dayStyle,
+      //                 {
+      //                   color: frequency.includes(d.day) ? colors.palette.neutral100 : colors.text,
+      //                 },
+      //               ]}
+      //               size="md"
+      //             />
+      //           </TouchableOpacity>
+      //         ))}
+      //       </View>
+      //     </View>
+
+      //     {/* HABIT TIME -------------------------------------------------- */}
+      //     <View style={[$gap, { marginTop: spacing.md }]}>
+      //       <View style={$frequencyContainer}>
+      //         <Text preset="formLabel" text="Habit time" style={$labelStyle} />
+      //         <Text text="*" style={$labelRequired} />
+      //       </View>
+
+      //       <DateTimePicker
+      //         testID="dateTimePicker"
+      //         style={$dateTimePicker}
+      //         value={habitTime}
+      //         mode="time"
+      //         is24Hour={false}
+      //         locale="en-US"
+      //         accentColor={colors.palette.neutral100}
+      //         onChange={(_, selectedDate) => setHabitTime(new Date(selectedDate!))}
+      //       />
+      //     </View>
+
+      //     {/* HABIT DATE -------------------------------------------------- */}
+      //     <View style={[$gap, { marginTop: spacing.md }]}>
+      //       <View style={$frequencyContainer}>
+      //         <Text preset="formLabel" text="Habit date" style={$labelStyle} />
+      //         <Text text="*" style={$labelRequired} />
+      //       </View>
+      //       <DateTimePicker
+      //         testID="datePicker"
+      //         style={$dateTimePicker}
+      //         value={habitDate}
+      //         mode="date"
+      //         locale="en-US"
+      //         accentColor={colors.palette.neutral100}
+      //         onChange={(_, selectedDate) => {
+      //           if (selectedDate) {
+      //             setHabitDate(new Date(selectedDate))
+      //           }
+      //         }}
+      //       />
+      //     </View>
+
+      //     {/* REMINDERS -------------------------------------------------- */}
+      //     <View style={[$gap, { marginTop: spacing.md }]}>
+      //       <View style={$frequencyContainer}>
+      //         <Text preset="formLabel" text="Reminders" style={$labelStyle} />
+      //       </View>
+
+      //       <TouchableOpacity
+      //         style={{
+      //           backgroundColor: colors.palette.neutral200, // ✅ use grey tone like DateTimePicker
+      //           borderColor: colors.palette.neutral300,
+      //           borderWidth: 1,
+      //           borderRadius: spacing.xs,
+      //           height: 44,
+      //           paddingHorizontal: spacing.sm,
+      //           flexDirection: "row",
+      //           alignItems: "center",
+      //           justifyContent: "space-between",
+      //           alignSelf: "stretch", // ✅ match picker width
+      //         }}
+      //         onPress={() => setShowReminderList((s) => !s)}
+      //       >
+      //         <Text
+      //           text={reminder || "Select reminder…"}
+      //           size="md"
+      //           style={{ color: reminder ? colors.text : colors.palette.neutral500 }}
+      //         />
+      //         <Icon
+      //           icon="caretRight"
+      //           style={{ transform: [{ rotate: showReminderList ? "270deg" : "90deg" }] }}
+      //         />
+      //       </TouchableOpacity>
+
+      //       {showReminderList && (
+      //         <View
+      //           style={{
+      //             backgroundColor: colors.palette.neutral200, // ✅ grey background
+      //             borderColor: colors.palette.neutral300,
+      //             borderWidth: 1,
+      //             borderRadius: spacing.xs,
+      //             marginTop: spacing.xs,
+      //             overflow: "hidden",
+      //           }}
+      //         >
+      //           {REMINDER_OPTIONS.map((option) => {
+      //             const isSelected = reminder === option
+      //             return (
+      //               <TouchableOpacity
+      //                 key={option}
+      //                 style={{
+      //                   paddingVertical: spacing.xs,
+      //                   paddingHorizontal: spacing.sm,
+      //                   backgroundColor: isSelected
+      //                     ? colors.palette.primary500
+      //                     : colors.palette.neutral200,
+      //                 }}
+      //                 onPress={() => {
+      //                   setReminder(option)
+      //                   setShowReminderList(false)
+      //                 }}
+      //               >
+      //                 <Text
+      //                   text={option}
+      //                   size="md"
+      //                   style={{ color: isSelected ? colors.palette.neutral100 : colors.text }}
+      //                 />
+      //               </TouchableOpacity>
+      //             )
+      //           })}
+      //         </View>
+      //       )}
+      //     </View>
+
+      //     {/* CREATE BUTTON -------------------------------------------------- */}
+      //     <View>
+      //       <Button
+      //         style={[$btn, { marginTop: spacing.lg }]}
+      //         textStyle={{ color: colors.palette.neutral100 }}
+      //         onPress={handleCreateHabit}
+      //       >
+      //         Create habit
+      //       </Button>
+      //     </View>
+      //   </View>
+      // </Screen>
     )
   },
 )

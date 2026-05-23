@@ -893,7 +893,7 @@ export const ExperimentalStatsScreen: FC<StatisticsScreenProps> = observer(
 
           <View style={{ marginBottom: 12 }}>
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#000", marginBottom: 8 }}>
-              Habits Completed
+              Study Sessions Completed
             </Text>
             <Text style={{ fontSize: 20, fontWeight: "700", color: "#304FFE" }}>
               {rangeCompletion}%
@@ -953,7 +953,7 @@ export const ExperimentalStatsScreen: FC<StatisticsScreenProps> = observer(
               paddingLeft: 16,
             }}
           >
-            Tasks Completed
+            Subjects Completed
           </Text>
 
           {weeklyCompletionData.map((habit, idx) => (

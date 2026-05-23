@@ -33,151 +33,148 @@ export const CreateHabitScreen: FC<CreateHabitScreenProps> = observer(function C
   const userHabits = habitStore.habits.filter((h) => !h.deleted)
 
   return (
+
     <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
-      <View style={$headerContainer}>
-        <Icon icon="x" color={colors.text} onPress={() => navigation.goBack()} />
-        <Text text="Habit List" preset="heading" size="lg" />
-      </View>
+  <View style={$headerContainer}>
+    <Icon icon="x" color={colors.text} onPress={() => navigation.goBack()} />
+    <Text text="Study Session List" preset="heading" size="lg" />
+  </View>
 
-      <View style={$allHabitsContainer}>
-        {userHabits.length > 0 ? (
-          userHabits.map((habit, idx) => (
-            <View key={`habit-${habit.id}-${idx}`} style={$habitContainer}>
-              <View style={$habitLeftContainer}>
-                <View style={$emojiContainer}>
-                  {habit.emoji === DEFAULT_HABIT_ICON ? (
-                    <Image source={CheckMarkBlue} style={$habitIconImage} />
-                  ) : (
-                    <Text text={habit.emoji ?? "🔥"} size="lg" style={$emojiText} />
-                  )}
-                </View>
-
-                <Text
-                  text={habit.name}
-                  preset="formLabel"
-                  size="md"
-                  style={$habitNameText}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                />
-              </View>
-
-              <View style={$habitRightContainerRow}>
-                {/* Edit */}
-
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("EditHabit", { habitId: habit.id })}
-                  activeOpacity={0.8}
-                  style={{
-                    padding: 4,
-                    borderRadius: spacing.xs,
-                    backgroundColor: colors.palette.neutral100,
-                    elevation: 2,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 2,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="pencil"
-                    size={24}
-                    color={colors.palette.primary600}
-                  />
-                </TouchableOpacity>
-
-                {/* Pause */}
-
-                <TouchableOpacity
-                  onPress={() => habitStore.togglePauseHabit(habit.id)}
-                  activeOpacity={0.8}
-                  style={{
-                    padding: 4,
-                    borderRadius: spacing.xs,
-                    backgroundColor: colors.palette.neutral100,
-                    elevation: 2,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 2,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name={habit.paused ? "pause-circle" : "pause-circle-outline"}
-                    size={24}
-                    color={habit.paused ? colors.palette.primary600 : colors.palette.neutral500}
-                  />
-                </TouchableOpacity>
-
-                {/* Delete */}
-
-                <TouchableOpacity
-                  onPress={() =>
-                    Alert.alert(
-                      "Delete Habit",
-                      `Are you sure you want to delete "${habit.name}"?`,
-                      [
-                        { text: "Cancel", style: "cancel" },
-                        {
-                          text: "Delete",
-                          style: "destructive",
-                          onPress: () => {
-                            habitStore.removeHabit(habit.id)
-                          },
-                        },
-                      ],
-                      { cancelable: true },
-                    )
-                  }
-                  activeOpacity={0.8}
-                  style={{
-                    padding: 4,
-                    borderRadius: spacing.xs,
-                    backgroundColor: colors.palette.neutral100,
-                    elevation: 2,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 2,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="trash-can-outline"
-                    size={24}
-                    color={colors.palette.neutral500}
-                  />
-                </TouchableOpacity>
-              </View>
+  <View style={$allHabitsContainer}>
+    {userHabits.length > 0 ? (
+      userHabits.map((habit, idx) => (
+        <View key={`habit-${habit.id}-${idx}`} style={$habitContainer}>
+          <View style={$habitLeftContainer}>
+            <View style={$emojiContainer}>
+              {habit.emoji === DEFAULT_HABIT_ICON ? (
+                <Image source={CheckMarkBlue} style={$habitIconImage} />
+              ) : (
+                <Text text={habit.emoji ?? "🔥"} size="lg" style={$emojiText} />
+              )}
             </View>
-          ))
-        ) : (
-          <Text text="No habits found" preset="formLabel" size="md" />
-        )}
 
-        {/* Add new habit CTA */}
-
-        <View style={[$habitLeftContainer, { width: layout.window.width * 0.8 }]}>
-          <View style={[$habitRightContainer, { backgroundColor: colors.palette.neutral100 }]}>
-            <MaterialCommunityIcons
-              name="plus"
-              color={colors.palette.primary600}
-              size={28}
-              onPress={() => navigation.navigate("CreateNewHabit")}
+            <Text
+              text={habit.name}
+              preset="formLabel"
+              size="md"
+              style={$habitNameText}
+              numberOfLines={1}
+              ellipsizeMode="tail"
             />
           </View>
-          <Text text="Couldn’t find anything? Create a new habit" preset="formLabel" size="md" />
-        </View>
-      </View>
 
-      {/* DONE BUTTON -------------------------------------------------- */}
-      <Button
-        style={$btn}
-        textStyle={{ color: colors.palette.neutral100 }}
-        onPress={() => navigation.navigate("Home")}
-      >
-        Done
-      </Button>
-    </Screen>
+          <View style={$habitRightContainerRow}>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate("EditHabit", { habitId: habit.id })}
+              activeOpacity={0.8}
+              style={{
+                padding: 4,
+                borderRadius: spacing.xs,
+                backgroundColor: colors.palette.neutral100,
+                elevation: 2,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.1,
+                shadowRadius: 2,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="pencil"
+                size={24}
+                color={colors.palette.primary600}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => habitStore.togglePauseHabit(habit.id)}
+              activeOpacity={0.8}
+              style={{
+                padding: 4,
+                borderRadius: spacing.xs,
+                backgroundColor: colors.palette.neutral100,
+                elevation: 2,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.1,
+                shadowRadius: 2,
+              }}
+            >
+              <MaterialCommunityIcons
+                name={habit.paused ? "pause-circle" : "pause-circle-outline"}
+                size={24}
+                color={habit.paused ? colors.palette.primary600 : colors.palette.neutral500}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() =>
+                Alert.alert(
+                  "Delete Study Session",
+                  `Are you sure you want to delete "${habit.name}"?`,
+                  [
+                    { text: "Cancel", style: "cancel" },
+                    {
+                      text: "Delete",
+                      style: "destructive",
+                      onPress: () => {
+                        habitStore.removeHabit(habit.id)
+                      },
+                    },
+                  ],
+                  { cancelable: true },
+                )
+              }
+              activeOpacity={0.8}
+              style={{
+                padding: 4,
+                borderRadius: spacing.xs,
+                backgroundColor: colors.palette.neutral100,
+                elevation: 2,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.1,
+                shadowRadius: 2,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="trash-can-outline"
+                size={24}
+                color={colors.palette.neutral500}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      ))
+    ) : (
+      <Text text="No study sessions found" preset="formLabel" size="md" />
+    )}
+
+    <View style={[$habitLeftContainer, { width: layout.window.width * 0.8 }]}>
+      <View style={[$habitRightContainer, { backgroundColor: colors.palette.neutral100 }]}>
+        <MaterialCommunityIcons
+          name="plus"
+          color={colors.palette.primary600}
+          size={28}
+          onPress={() => navigation.navigate("CreateNewHabit")}
+        />
+      </View>
+      <Text
+        text="Couldn’t find anything? Create a new study session"
+        preset="formLabel"
+        size="md"
+      />
+    </View>
+  </View>
+
+  <Button
+    style={$btn}
+    textStyle={{ color: colors.palette.neutral100 }}
+    onPress={() => navigation.navigate("Home")}
+  >
+    Done
+  </Button>
+</Screen>
   )
 })
 
