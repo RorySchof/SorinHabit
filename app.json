@@ -1,11 +1,11 @@
 {
-  "name": "Sorin",
-  "displayName": "Sorin",
+  "name": "Sorin Study",
+  "displayName": "Sorin Study",
   "expo": {
-    "name": "Sorin",
+    "name": "Sorin Study",
     "slug": "habittracker",
-    "scheme": "sorin",
-    "version": "1.0.3",
+    "scheme": "sorin-study",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/CheckMarkBlue.png",
     "splash": {
@@ -22,7 +22,7 @@
     ],
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
-      "package": "com.habittracker",
+      "package": "com.sorin.study",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
@@ -36,7 +36,7 @@
     "ios": {
       "icon": "./assets/images/CheckMarkBlue.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.sorin.app.ios",
+      "bundleIdentifier": "com.sorin.study",
       "splash": {
         "image": "./assets/images/SorinSplash.png",
         "tabletImage": "./assets/images/SorinSplash.png",
