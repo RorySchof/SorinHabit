@@ -12,6 +12,7 @@ import { authStore } from "app/models/auth-store"
 import { syncHabitToSupabase, syncActivityToSupabase } from "app/services/api/habit-sync"
 import * as Haptics from "expo-haptics"
 import { getSnapshot } from "mobx-state-tree"
+import { maybeAskForReview } from "../utils/reviewPrompt"
 
 
 // REMINDER OFFSETS --------------------------------------------
@@ -283,6 +284,11 @@ export const HabitStoreModel = types
           if (!completed) break
 
           current += 1
+
+          // Trigger review prompt at 5‑day streak
+          if (current === 5) {
+            maybeAskForReview()
+          }
           cursor = subDays(cursor, 1)
         }
       }
@@ -480,14 +486,14 @@ export const HabitStoreModel = types
       const habit = self.habits.find((h) => h.id === id)
       if (!habit) return
       if (habit.paused) return
-    
+
       const today = dateStr
       const target = habit.target
-    
+
       let logEntry = self.activityLog.find(
         (entry) => entry.habitId === id && entry.date === today
       )
-    
+
       if (logEntry) {
         logEntry.count = target
       } else {
@@ -497,46 +503,46 @@ export const HabitStoreModel = types
           count: target,
         })
       }
-    
+
       habit.current = target
-    
+
       self.recalculateTodayProgressForHabit(habit)
       self.calculateHabitStreaks(habit)
-    
+
       // 🔥 Supabase sync (missing before)
       syncActivityToSupabase(id, dateStr, habit.current)
     },
-    
+
 
     // ZERO HABIT SWIPE ---------------------------------------------------------------
 
-resetHabit(id: string, dateStr: string) {
-  const habit = self.habits.find((h) => h.id === id)
-  if (!habit) return
-  if (habit.paused) return
+    resetHabit(id: string, dateStr: string) {
+      const habit = self.habits.find((h) => h.id === id)
+      if (!habit) return
+      if (habit.paused) return
 
-  const today = dateStr
+      const today = dateStr
 
-  // Remove today's log entry entirely
-  const idx = self.activityLog.findIndex(
-    (entry) => entry.habitId === id && entry.date === today
-  )
+      // Remove today's log entry entirely
+      const idx = self.activityLog.findIndex(
+        (entry) => entry.habitId === id && entry.date === today
+      )
 
-  if (idx !== -1) {
-    self.activityLog.splice(idx, 1)
-  }
+      if (idx !== -1) {
+        self.activityLog.splice(idx, 1)
+      }
 
-  habit.current = 0
+      habit.current = 0
 
-  self.recalculateTodayProgressForHabit(habit)
-  self.calculateHabitStreaks(habit)
+      self.recalculateTodayProgressForHabit(habit)
+      self.calculateHabitStreaks(habit)
 
-  // 🔥 Supabase sync (missing before)
-  syncActivityToSupabase(id, dateStr, 0)
+      // 🔥 Supabase sync (missing before)
+      syncActivityToSupabase(id, dateStr, 0)
 
-  
-},
-    
+
+    },
+
 
 
 
