@@ -260,24 +260,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         <View style={{ gap: spacing.md, marginTop: spacing.sm }}>
           <Text tx="homeScreen.check_in" preset="subheading" />
 
-          {/* Swipe Hint */}
-
-          {/* {showSwipeHint && (
-            <Pressable onPress={dismissSwipeHint}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: colors.palette.neutral500,
-                  marginTop: -4,
-                  marginBottom: spacing.xs,
-                  marginLeft: 2,
-                }}
-              >
-                Swipe up to complete ×
-              </Text>
-            </Pressable>
-          )} */}
-
 
           {/* Horizontal Scroll of Check-In Cards */}
           <ScrollView
