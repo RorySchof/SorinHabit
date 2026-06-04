@@ -97,11 +97,11 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   useEffect(() => {
     if (!showSwipeHint) return
 
-    const timer = setTimeout(() => {
-      dismissSwipeHint()
-    }, 15000) // hide after 15 seconds
+    // const timer = setTimeout(() => {
+    //   dismissSwipeHint()
+    // }, 30000) // hide after 15 seconds
 
-    return () => clearTimeout(timer)
+    // return () => clearTimeout(timer)
   }, [showSwipeHint])
 
 
@@ -261,7 +261,8 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
           <Text tx="homeScreen.check_in" preset="subheading" />
 
           {/* Swipe Hint */}
-          {showSwipeHint && (
+
+          {/* {showSwipeHint && (
             <Pressable onPress={dismissSwipeHint}>
               <Text
                 style={{
@@ -272,10 +273,12 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                   marginLeft: 2,
                 }}
               >
-                Swipe up to complete habit ×
+                Swipe up to complete ×
               </Text>
             </Pressable>
-          )}
+          )} */}
+
+
           {/* Horizontal Scroll of Check-In Cards */}
           <ScrollView
             ref={scrollRef} // 👈 attach here
@@ -285,6 +288,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
             scrollEnabled={true}
             directionalLockEnabled={true}
           >
+
             {/* INDIVIDUAL CHECK-IN CARD ---------------------------------- */}
 
             {checkIns.map((checkIn, i) => {
@@ -329,6 +333,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                 ]).start()
               }
 
+
               return (
                 <PanGestureHandler
                   key={`${checkIn.title}-${i}`}
@@ -361,8 +366,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                       }
                     }
                   }} >
-
-
+                    
                   <Card
                     style={$checkInCardStyle}
                     verticalAlignment="space-between"
@@ -419,8 +423,25 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                           const todayCount = getTodayCount(matchedHabit.id)
                           const isAtMax = todayCount >= matchedHabit.target
                           const isAtMin = todayCount <= 0
+                    
                           return (
                             <>
+                              {i === 0 && showSwipeHint && (
+                                <Text
+                                  text="Swipe up to complete"
+                                  style={{
+                                    position: "absolute",
+                                    top: -28,
+                                    left: 0,
+                                    right: 0,
+                                    textAlign: "center",
+                                    fontSize: 12,
+                                    color: colors.palette.neutral500,
+                                    marginBottom: 18,
+                                  }}
+                                />
+                              )}
+                    
                               <Pressable
                                 disabled={isAtMin}
                                 onPress={() => habitStore.decrementHabit(matchedHabit.id, selected)}
@@ -431,7 +452,9 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                                   size={24}
                                 />
                               </Pressable>
+                    
                               <Text text="|" style={{ color: colors.palette.neutral500 }} />
+                    
                               <Pressable
                                 disabled={isAtMax}
                                 onPress={() => habitStore.incrementHabit(matchedHabit.id, selected)}
@@ -494,7 +517,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
           }}
         >
           <Text
-            text="Create a new study session"
+            text="Create new session"
             preset="bold"
             size="md"
             style={{ color: colors.palette.neutral100 }}
@@ -527,7 +550,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
           }}
         >
           <Text
-            text="Create a new study session"
+            text="Create new session"
             preset="bold"
             size="md"
             style={{ color: colors.palette.neutral100 }}
@@ -825,10 +848,15 @@ const $emptyStateContainer: ViewStyle = {
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: 0.1,
   shadowRadius: 2,
+
+  // FIXES FOR REAL DEVICE CENTERING
+  width: "100%",
   alignItems: "center",
   justifyContent: "center",
+
   gap: spacing.sm,
 }
+
 
 const $emptyEmojiContainer: ViewStyle = {
   backgroundColor: colors.palette.neutral100,

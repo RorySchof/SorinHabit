@@ -251,7 +251,7 @@ return (
 
       <TextField
         label="Unit"
-        placeholder="e.g. minutes"
+        placeholder="e.g. Hours"
         value={unit}
         onChangeText={setUnit}
       />

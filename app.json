@@ -7,7 +7,9 @@
     "scheme": "sorin-study",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/CheckMarkBlue.png",
+    
+    "icon": "./assets/images/BookTransparent.png",
+
     "splash": {
       "image": "./assets/images/SorinSplash.png",
       "resizeMode": "contain",
@@ -34,7 +36,7 @@
       }
     },
     "ios": {
-      "icon": "./assets/images/CheckMarkBlue.png",
+      "icon": "./assets/icons/BookIcon.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.sorin.study",
       "splash": {

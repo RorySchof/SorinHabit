@@ -244,7 +244,7 @@ export const CreateNewHabitScreen: FC<CreateNewHabitScreenProps> = observer(
         required
       />
 
-      <TextField label="Unit" placeholder="minutes" value={unit} onChangeText={setUnit} />
+      <TextField label="Unit" placeholder="Hours" value={unit} onChangeText={setUnit} />
     </View>
 
     <View style={[$gap, { marginTop: spacing.md }]}>
