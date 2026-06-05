@@ -348,7 +348,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                       }
                     }
                   }} >
-                    
+
                   <Card
                     style={$checkInCardStyle}
                     verticalAlignment="space-between"
@@ -396,60 +396,58 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                             </View>
                           )}
                         </AnimatedCircularProgress>
+                        <View style={{ height: i === 0 && showSwipeHint ? undefined : 0 }}>
+                          {i === 0 && showSwipeHint && (
+                            <Text
+                              text="Swipe up / down"
+                              size="xxs"
+                              style={{
+                                textAlign: "center",
+                                marginTop: spacing.xs,
+                                marginBottom: -45,
+                                color: colors.palette.neutral500,
+                              }}
+                            />
+                          )}
+                        </View>
                       </Animated.View>
                     }
                     FooterComponent={
                       <View style={$footerContainer}>
-                        {(() => {
-                          if (!matchedHabit) return null
-                          const todayCount = getTodayCount(matchedHabit.id)
-                          const isAtMax = todayCount >= matchedHabit.target
-                          const isAtMin = todayCount <= 0
-                    
-                          return (
-                            <>
-                              {i === 0 && showSwipeHint && (
-                                <Text
-                                  text="Swipe up to complete"
-                                  style={{
-                                    position: "absolute",
-                                    top: -28,
-                                    left: 0,
-                                    right: 0,
-                                    textAlign: "center",
-                                    fontSize: 12,
-                                    color: colors.palette.neutral500,
-                                    marginBottom: 18,
-                                  }}
-                                />
-                              )}
-                    
-                              <Pressable
-                                disabled={isAtMin}
-                                onPress={() => habitStore.decrementHabit(matchedHabit.id, selected)}
-                              >
-                                <MaterialCommunityIcons
-                                  name="minus"
-                                  color={isAtMin ? "gray" : colors.palette.neutral500}
-                                  size={24}
-                                />
-                              </Pressable>
-                    
-                              <Text text="|" style={{ color: colors.palette.neutral500 }} />
-                    
-                              <Pressable
-                                disabled={isAtMax}
-                                onPress={() => habitStore.incrementHabit(matchedHabit.id, selected)}
-                              >
-                                <MaterialCommunityIcons
-                                  name="plus"
-                                  color={isAtMax ? "gray" : colors.palette.neutral500}
-                                  size={24}
-                                />
-                              </Pressable>
-                            </>
-                          )
-                        })()}
+                          {(() => {
+                            if (!matchedHabit) return null
+                            const todayCount = getTodayCount(matchedHabit.id)
+                            const isAtMax = todayCount >= matchedHabit.target
+                            const isAtMin = todayCount <= 0
+
+                            return (
+                              <>
+                                <Pressable
+                                  disabled={isAtMin}
+                                  onPress={() => habitStore.decrementHabit(matchedHabit.id, selected)}
+                                >
+                                  <MaterialCommunityIcons
+                                    name="minus"
+                                    color={isAtMin ? "gray" : colors.palette.neutral500}
+                                    size={24}
+                                  />
+                                </Pressable>
+
+                                <Text text="|" style={{ color: colors.palette.neutral500 }} />
+
+                                <Pressable
+                                  disabled={isAtMax}
+                                  onPress={() => habitStore.incrementHabit(matchedHabit.id, selected)}
+                                >
+                                  <MaterialCommunityIcons
+                                    name="plus"
+                                    color={isAtMax ? "gray" : colors.palette.neutral500}
+                                    size={24}
+                                  />
+                                </Pressable>
+                              </>
+                            )
+                          })()}
                       </View>
                     }
                   />
@@ -462,108 +460,108 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         {/* TODAY'S HABIT LIST -------------------------------------------------- */}
 
         <View style={{ gap: spacing.md }}>
-  <Text tx="homeScreen.today" preset="subheading" />
-  <View style={$bottomContainer}>
-    {allHabits.length === 0 ? (
-      <View style={$emptyStateContainer}>
-        <View style={$emptyEmojiContainer}>
-          <Image source={CheckMarkBlue} style={$emptyStateIcon} />
-        </View>
+          <Text tx="homeScreen.today" preset="subheading" />
+          <View style={$bottomContainer}>
+            {allHabits.length === 0 ? (
+              <View style={$emptyStateContainer}>
+                <View style={$emptyEmojiContainer}>
+                  <Image source={CheckMarkBlue} style={$emptyStateIcon} />
+                </View>
 
-        <Text
-          text="Create your first study session"
-          preset="heading"
-          size="md"
-          style={{ textAlign: "center" }}
-        />
+                <Text
+                  text="Create your first study session"
+                  preset="heading"
+                  size="md"
+                  style={{ textAlign: "center" }}
+                />
 
-        <Text
-          text="Start small. Build momentum. Create your first study session to begin your streak."
-          preset="default"
-          size="sm"
-          style={{
-            textAlign: "center",
-            color: colors.palette.neutral600,
-            marginTop: spacing.xs,
-          }}
-        />
+                <Text
+                  text="Start small. Build momentum. Create your first study session to begin your streak."
+                  preset="default"
+                  size="sm"
+                  style={{
+                    textAlign: "center",
+                    color: colors.palette.neutral600,
+                    marginTop: spacing.xs,
+                  }}
+                />
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate("CreateNewHabit")}
-          style={{
-            marginTop: spacing.lg,
-            backgroundColor: "#304FFE",
-            borderRadius: spacing.xs,
-            paddingVertical: spacing.sm,
-            paddingHorizontal: spacing.lg,
-          }}
-        >
-          <Text
-            text="Create new session"
-            preset="bold"
-            size="md"
-            style={{ color: colors.palette.neutral100 }}
-          />
-        </TouchableOpacity>
-      </View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("CreateNewHabit")}
+                  style={{
+                    marginTop: spacing.lg,
+                    backgroundColor: "#304FFE",
+                    borderRadius: spacing.xs,
+                    paddingVertical: spacing.sm,
+                    paddingHorizontal: spacing.lg,
+                  }}
+                >
+                  <Text
+                    text="Create new session"
+                    preset="bold"
+                    size="md"
+                    style={{ color: colors.palette.neutral100 }}
+                  />
+                </TouchableOpacity>
+              </View>
 
-    ) : filteredHabits.length === 0 ? (
+            ) : filteredHabits.length === 0 ? (
 
-      <View style={$emptyStateContainer}>
-        <View style={$emojiContainer}>
-          <Text text="🗓️" size="xl" style={$emojiText} />
-        </View>
+              <View style={$emptyStateContainer}>
+                <View style={$emojiContainer}>
+                  <Text text="🗓️" size="xl" style={$emojiText} />
+                </View>
 
-        <Text
-          text="No study sessions scheduled for today"
-          preset="heading"
-          size="md"
-          style={{ textAlign: "center", color: colors.text }}
-        />
+                <Text
+                  text="No study sessions scheduled for today"
+                  preset="heading"
+                  size="md"
+                  style={{ textAlign: "center", color: colors.text }}
+                />
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate("CreateNewHabit")}
-          style={{
-            marginTop: spacing.md,
-            backgroundColor: colors.palette.primary600,
-            borderRadius: spacing.xs,
-            paddingVertical: spacing.sm,
-            paddingHorizontal: spacing.lg,
-          }}
-        >
-          <Text
-            text="Create new session"
-            preset="bold"
-            size="md"
-            style={{ color: colors.palette.neutral100 }}
-          />
-        </TouchableOpacity>
-      </View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("CreateNewHabit")}
+                  style={{
+                    marginTop: spacing.md,
+                    backgroundColor: colors.palette.primary600,
+                    borderRadius: spacing.xs,
+                    paddingVertical: spacing.sm,
+                    paddingHorizontal: spacing.lg,
+                  }}
+                >
+                  <Text
+                    text="Create new session"
+                    preset="bold"
+                    size="md"
+                    style={{ color: colors.palette.neutral100 }}
+                  />
+                </TouchableOpacity>
+              </View>
 
-    ) : (
+            ) : (
 
-      filteredHabits.map((habit, idx) => {
-        const todayCount = getTodayCount(habit.id)
-        const transformedHabit = {
-          id: habit.id,
-          name: habit.name || "Unnamed Study Session",
-          emoji: habit.emoji || "🔥",
-          time: habit.time || "08:00",
-          current: todayCount,
-          target: habit.target || 1,
-          finished: habit.finished ?? false,
-          paused: habit.paused,
-        }
+              filteredHabits.map((habit, idx) => {
+                const todayCount = getTodayCount(habit.id)
+                const transformedHabit = {
+                  id: habit.id,
+                  name: habit.name || "Unnamed Study Session",
+                  emoji: habit.emoji || "🔥",
+                  time: habit.time || "08:00",
+                  current: todayCount,
+                  target: habit.target || 1,
+                  finished: habit.finished ?? false,
+                  paused: habit.paused,
+                }
 
-        return (
-          <View key={`${habit.id}-${idx}`} style={{ marginBottom: 12 }}>
-            <Habit task={transformedHabit} navigation={navigation} />
+                return (
+                  <View key={`${habit.id}-${idx}`} style={{ marginBottom: 12 }}>
+                    <Habit task={transformedHabit} navigation={navigation} />
+                  </View>
+                )
+              })
+            )}
           </View>
-        )
-      })
-    )}
-  </View>
-</View>
+        </View>
 
       </Screen>
     </SafeAreaView>
