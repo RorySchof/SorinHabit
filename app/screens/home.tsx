@@ -396,16 +396,15 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                             </View>
                           )}
                         </AnimatedCircularProgress>
-                        <View style={{ height: i === 0 && showSwipeHint ? undefined : 0 }}>
+                        <View style={{ minHeight: 28, justifyContent: "center" }}>
                           {i === 0 && showSwipeHint && (
                             <Text
                               text="Swipe up / down"
                               size="xxs"
                               style={{
                                 textAlign: "center",
-                                marginTop: spacing.xs,
-                                marginBottom: -45,
                                 color: colors.palette.neutral500,
+                                marginTop: spacing.xs,
                               }}
                             />
                           )}
@@ -751,6 +750,7 @@ const $circularProgressChildren: ViewStyle = {
 const $footerContainer: ViewStyle = {
   backgroundColor: colors.background,
   padding: spacing.xs,
+  paddingTop: spacing.xs,
   borderRadius: 10,
   flexDirection: "row",
   justifyContent: "space-around",
